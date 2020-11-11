@@ -1,3 +1,16 @@
-#boards {
-    background-color: green;
+body {
+    background-color: #cdcdcd;
+}
+
+.container {
+    background-color: white;
+    margin-bottom: 20px;
+}
+
+.board-header {
+    height: 50px;
+    padding-left: 10px;
+    line-height: 50px;
+    font-family: sans-serif;
+    font-size: 20px;
 }

@@ -19,7 +19,15 @@ export let dom = {
 
         for(let board of boards){
             boardList += `
-                <li>${board.title}</li>
+                <section class="board">
+                    <div class="board-header">
+                        <span class="board-title">Board ${board.id}</span>
+                        <input class="board-title-input" type="text" value="Board ${board.id}" />
+                        <button class="board-add">Add Card</button>
+                        <button class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="board-columns"></div>
+                </section>
             `;
         }
 
@@ -29,8 +37,20 @@ export let dom = {
             </ul>
         `;
 
-        let boardsContainer = document.querySelector('#boards');
-        boardsContainer.insertAdjacentHTML("beforeend", outerHtml);
+        let boardsContainer = document.querySelector('.board-container');
+        boardsContainer.insertAdjacentHTML("beforeend", boardList);
+
+        let boardInputs = document.querySelectorAll('.board-title');
+        console.log(boardInputs);
+        for (let boardInput of boardInputs) {
+            boardInput.addEventListener('click', (e) => {
+                console.log(e.target.nodeName);
+                e.target.style.display = 'none';
+                e.target.nextElementSibling.style.display = 'inline';
+            });
+        }
+
+
     },
     loadCards: function (boardId) {
         // retrieves cards and makes showCards called
