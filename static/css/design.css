@@ -45,13 +45,16 @@ section.board{
 }
 
 .board-header{
+    display: flex;
+    justify-content: center;
+    position: relative;
     height: 50px;
     background: #fff;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
 }
 
 .board-title, .board-title-input{
-    margin: 13px;
+    /*margin: 13px;*/
     display: inline-block;
     font-size: 20px;
 }
@@ -128,6 +131,50 @@ section.board{
     padding-right: 16px;
 }
 
+.board-title {
+    position: relative;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 .board-title-input {
+    position: relative;
+    left: 13px;
     display: none;
+    width: 150px;
+    top: 50%;
+    transform: translateY(-50%);
+    /*width: 0;*/
+    /*transition: width 1s;*/
+}
+
+.board-title-input:focus {
+    /*width: 150px;*/
+    outline-color: #0b8eff;
+}
+
+.board-title-input:not(:focus) {
+    /*width: 0;*/
+}
+
+.board-title-container {
+    display: inline-block;
+    position: relative;
+    height: 50px;
+    border: 0px solid black;
+}
+
+.board-buttons-container {
+    flex-grow: 10;
+    display: inline-block;
+    height: 50px;
+    border: 0px solid black;
+}
+
+.board-add {
+    position: relative;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
 }
