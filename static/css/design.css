@@ -69,16 +69,26 @@ section.board{
 
 .board-columns{
     display: flex;
+    flex-direction: row;
     flex-wrap: nowrap;
+    /*justify-content: space-around;*/
+    /*align-items: stretch;*/
+    overflow: scroll;
 }
 
 .board-column{
     padding: 10px;
-    flex: 1;
+    flex: 0 0 content;
+    /*flex-grow: 0;*/
+    /*flex-shrink: 0;*/
+    /*flex-basis: 250px;*/
 }
 
 .board-column-content{
     min-height: 49px;
+    /*min-width: 150px;*/
+    /*max-width: 250px;*/
+    width: 200px;
 }
 
 .board-column-content:empty{
@@ -91,6 +101,9 @@ section.board{
 
 .board-column-title{
     text-align: center;
+    /*min-width: 150px;*/
+    /*max-width: 250px;*/
+    width: 200px;
 }
 
 .card{
