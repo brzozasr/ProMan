@@ -1,5 +1,6 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, session
 from util import json_response
+from json_data import *
 
 import data_handler
 
@@ -14,13 +15,95 @@ def index():
     return render_template('index.html')
 
 
+@app.route("/get-all-data")
+def get_all_data():
+    """All the boards, the columns and the cards as a JSON."""
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+    else:
+        data = get_all_public_data()
+
+    response = app.response_class(
+        response=data,
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
 @app.route("/get-boards")
-@json_response
 def get_boards():
+    """All the boards as a JSON"""
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+    else:
+        data = get_public_boards()
+
+    response = app.response_class(
+        response=data,
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app.route("/get-boardss")
+@json_response
+def get_boardss():
     """
     All the boards
     """
     return data_handler.get_boards()
+
+
+@app.route("/get-board/<int:board_id>")
+def get_board(board_id):
+    """Get the board by ID and returns as a JSON
+    with the columns and the cards."""
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+    else:
+        data = get_public_board(board_id)
+
+    response = app.response_class(
+        response=data,
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app.route("/get-column/<int:col_id>")
+def get_column(col_id):
+    """Get the board by ID and returns as a JSON
+    with the columns and the cards."""
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+    else:
+        data = get_public_col(col_id)
+
+    response = app.response_class(
+        response=data,
+        status=200,
+        mimetype='application/json'
+    )
+    return response
+
+
+@app.route("/get-card/<int:card_id>")
+def get_card(card_id):
+    """Get the card by ID and returns as a JSON."""
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+    else:
+        data = get_public_card(card_id)
+
+    response = app.response_class(
+        response=data,
+        status=200,
+        mimetype='application/json'
+    )
+    return response
 
 
 @app.route("/get-status/<int:status_id>")

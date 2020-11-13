@@ -56,6 +56,12 @@ export let dataHandler = {
             callback(response);
         });
     },
+    getAllData: function (callback) {
+        this._api_get(`/get-all-data`, (response) => {
+            this._data[`allData`] = response;
+            callback(response);
+        });
+    },
     getCard: function (cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
     },
