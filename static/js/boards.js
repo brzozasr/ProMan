@@ -19,10 +19,10 @@ export let boardHiding = {
             chevronButton.removeEventListener('click', boardHiding.hideBoard);
 
             if (!this.boards[i].hasAttribute('style')) {
-                console.log(`${this.boards[i].getAttribute('id')} Has style: ${this.boards[i].getAttribute('style')} so add eventListener: hideBoard`)
+                // console.log(`${this.boards[i].getAttribute('id')} Has style: ${this.boards[i].getAttribute('style')} so add eventListener: hideBoard`)
                 chevronButton.addEventListener("click", boardHiding.hideBoard);
             } else {
-                console.log(`${this.boards[i].getAttribute('id')} Has style: ${this.boards[i].getAttribute('style')} so add eventListener: showBoard`)
+                // console.log(`${this.boards[i].getAttribute('id')} Has style: ${this.boards[i].getAttribute('style')} so add eventListener: showBoard`)
                 chevronButton.addEventListener("click", boardHiding.showBoard);
             }
             i++;
@@ -30,7 +30,7 @@ export let boardHiding = {
     },
 
     showBoard: function(e) {
-        console.log('show');
+        // console.log('show');
         boardHiding.hideAllBoards();
         let chevronButtonParent = e.currentTarget.parentElement;
         let boardHeaderParent = chevronButtonParent.parentElement.parentElement;
@@ -39,11 +39,11 @@ export let boardHiding = {
         let boardColumns = document.getElementById(`board-columns-${boardId}`);
 
 
-        console.log(`${boardColumns.getAttribute('id')} style before: ${boardColumns.getAttribute('style')}`);
+        // console.log(`${boardColumns.getAttribute('id')} style before: ${boardColumns.getAttribute('style')}`);
         if (boardColumns.hasAttribute('style')) {
             boardColumns.removeAttribute('style');
         }
-        console.log(`${boardColumns.getAttribute('id')} style after: ${boardColumns.getAttribute('style')}`);
+        // console.log(`${boardColumns.getAttribute('id')} style after: ${boardColumns.getAttribute('style')}`);
 
         let addButton = e.currentTarget.previousElementSibling;
         if (addButton.hasAttribute('style')) {
@@ -64,13 +64,13 @@ export let boardHiding = {
             chevronButton.removeEventListener('click', boardHiding.hideBoard);
         });
 
-        console.log(`style: ${boardColumns.getAttribute('style')}`);
+        // console.log(`style: ${boardColumns.getAttribute('style')}`);
 
         boardHiding.chevronsAddListener();
     },
 
     hideBoard: function(e) {
-        console.log('hide');
+        // console.log('hide');
         let chevronButtonParent = e.currentTarget.parentElement;
         let boardHeaderParent = chevronButtonParent.parentElement.parentElement;
         let board = boardHeaderParent.querySelectorAll('.board-columns');

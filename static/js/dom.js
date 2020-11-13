@@ -101,13 +101,13 @@ export let dom = {
             statusIDs.push(card.status_id);
         }
         let statusIDsUniq = [...new Set(statusIDs)].sort();
-        console.log(cards);
+        // console.log(statusIDsUniq);
 
         let boardId = cards[0].board_id;
 
 
         for (let statusID of statusIDsUniq) {
-
+            console.log(statusID);
             let cardList = '';
 
             for (let card of cards) {
@@ -125,6 +125,16 @@ export let dom = {
             this.loadStatus(statusID, cardList, boardId);
 
         }
+        // let promises = [];
+        //
+        // for (let statusID of statusIDs) {
+        //     promises.push(function () {
+        //         return new Promise(resolve => {
+        //
+        //         })
+        //     })
+        // }
+        // this.loadStatus(statusID, cardList, boardId);
     },
     // here comes more features
     loadStatus: function (statusId, cardList, boardId) {
@@ -135,7 +145,7 @@ export let dom = {
         });
     },
     showStatus: function(statusName, cardList, boardId) {
-
+        console.log(statusName);
         let column = `
             <div class="board-column">
                 <div class="board-column-title">${statusName}</div>
