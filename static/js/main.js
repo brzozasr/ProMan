@@ -1,5 +1,6 @@
 import { dom } from "./dom.js";
 
+
 document.addEventListener('DOMContentLoaded', init);
 // This function is to initialize the application
 function init() {
