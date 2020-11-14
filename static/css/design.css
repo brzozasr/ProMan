@@ -99,12 +99,13 @@ section.board{
     background: #eee;
 }
 
-.board-column-title{
-    text-align: center;
-    /*min-width: 150px;*/
-    /*max-width: 250px;*/
-    width: 200px;
-}
+/*.board-column-title{*/
+/*    display: inline-block;*/
+/*    text-align: center;*/
+/*    !*min-width: 150px;*!*/
+/*    !*max-width: 250px;*!*/
+/*    width: 200px;*/
+/*}*/
 
 .card{
     position: relative;
@@ -197,8 +198,11 @@ section.board{
 }
 
 .board-column-title {
+    display: inline-block;
     position: relative;
+    width: 200px;
     /*left: 13px;*/
+    text-align: center;
     top: 50%;
     transform: translateY(-50%);
 }
@@ -229,7 +233,9 @@ section.board{
 }
 
 .card-title {
+    display: inline-block;
     position: relative;
+    line-height: 20px;
     /*left: 13px;*/
     top: 50%;
     transform: translateY(-50%);
@@ -258,5 +264,41 @@ section.board{
 
 .card-title-input:focus {
     /*width: 150px;*/
+    outline-color: #0b8eff;
+}
+
+.new-board-add-button-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+    line-height: 25px;
+    padding: 5px 5px 5px 5px;
+    height: 25px;
+    width: 200px;
+    background-color: rgba(205, 205, 205, 0.3);
+    cursor: pointer;
+    color: #787878;
+    border: 0px solid red;
+}
+
+.new-board-add-button {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.new-board-add-button-container:hover {
+    background-color: rgba(175, 175, 175, 0.3);
+}
+
+.new-board-add-button-input {
+    position: relative;
+    display: none;
+    color: white;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.new-board-add-button-input:focus {
     outline-color: #0b8eff;
 }

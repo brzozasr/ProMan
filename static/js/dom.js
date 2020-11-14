@@ -44,6 +44,8 @@ export let dom = {
         this.changeElementTitleAddEventListeners('board-title', 'board-title-input');
         this.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
         this.changeElementTitleAddEventListeners('card-title', 'card-title-input');
+        this.newBoardAddButton();
+        this.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
     },
     showColumns: function (columns, boardId) {
         // console.dir(boardId);
@@ -52,7 +54,7 @@ export let dom = {
             let columnHTML = `
                 <div class="board-column">
                     <div class="board-column-title-container">
-                        <div class="board-column-title">${column.col_title}</div>
+                        <span class="board-column-title">${column.col_title}</span>
                         <input class="board-column-title-input" type="text" value="${column.col_title}" />
                     </div>
                     <div id="board-column-content-${column.col_id}" class="board-column-content">
@@ -75,7 +77,7 @@ export let dom = {
                 <div class="card" draggable="true">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
-                        <div class="card-title">${card.card_title}</div>
+                        <span class="card-title">${card.card_title}</span>
                         <input class="card-title-input" type="text" value="${card.card_title}" />
                     </div>
                 </div>
@@ -92,10 +94,25 @@ export let dom = {
         for (let boardTitle of boardTitles) {
             boardTitle.addEventListener('click', (e) => {
                 // console.log(e.target.nodeName);
-                e.target.style.display = 'none';
-                e.target.nextElementSibling.style.display = 'inline-block';
-                e.target.nextElementSibling.focus();
-                e.target.nextElementSibling.select();
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling.style.display = 'inline-block';
+
+                try {
+                    e.currentTarget.nextElementSibling.querySelector('input').focus();
+                    e.currentTarget.nextElementSibling.querySelector('input').select();
+                }
+                catch {
+                    e.currentTarget.nextElementSibling.focus();
+                    e.currentTarget.nextElementSibling.select();
+                }
+
+                // if (e.currentTarget.nextElementSibling.querySelector('input').focus() === null) {
+                //     e.currentTarget.nextElementSibling.focus();
+                // }
+                // if (e.currentTarget.nextElementSibling.querySelector('input').select() === null) {
+                //     e.currentTarget.nextElementSibling.select();
+                // }
+
                 // e.target.nextElementSibling.style.width = '150px';
                 // console.log(`p1: ${e.target.classList}`);
             });
@@ -110,39 +127,63 @@ export let dom = {
         for (let boardInput of boardInputs) {
             boardInput.addEventListener('focusout', e => {
                 // console.log('focus out');
-                if (e.target.style.display === 'inline-block') {
-                    e.target.previousElementSibling.style.display = 'inline-block';
+                if (e.currentTarget.style.display === 'inline-block') {
+                    e.currentTarget.previousElementSibling.style.display = 'inline-block';
                     // e.target.style.width = '0';
-                    e.target.style.display = 'none';
+                    e.currentTarget.style.display = 'none';
 
-                    e.target.value = e.target.previousElementSibling.innerText;
+                    e.currentTarget.value = e.currentTarget.previousElementSibling.innerText;
                 }
             })
         }
     },
+    newBoardAddButton: function () {
+        let addButton = `
+            <section>
+                <div class="new-board-add-button-container">
+                    <div class="new-board-add-button">
+                        <i class="fa fa-plus"></i>
+                        <span class="new-board-txt">Add new board</span>
+                    </div>
+                    <div class="new-board-add-button-input">
+                        <input type="text" class="new-board-txt-input" size="15" />
+                    </div>
+                </div>
+            </section>
+        `;
+
+        let boardsContainer = document.querySelector('.board-container');
+        boardsContainer.insertAdjacentHTML("beforeend", addButton);
+
+
+    },
     keyMapping: function (e, boardInputs) {
+        let activeElement = document.activeElement;
+
         switch (e.key) {
             case "Enter":
                 // console.log('Enter');
 
-
-                for (let boardInput of boardInputs) {
-                    if (boardInput.style.display === 'inline-block') {
-
-                        boardInput.previousElementSibling.style.display = 'inline-block';
-                        boardInput.previousElementSibling.innerText = boardInput.value;
-                        boardInput.style.display = 'none';
-                    }
+                try {
+                    activeElement.previousElementSibling.innerText = activeElement.value;
+                    activeElement.previousElementSibling.style.display = 'inline-block';
                 }
+                catch {
+                    activeElement.parentElement.parentElement.firstElementChild.lastElementChild.innerText = activeElement.value;
+                    activeElement.parentElement.parentElement.firstElementChild.lastElementChild.style.display = 'inline-block';
+                }
+
+                activeElement.style.display = 'none';
+
                 break;
             case "Escape":
                 e.preventDefault();
                 // console.log('Escape');
                 for (let boardInput of boardInputs) {
-                    if (boardInput.style.display === 'inline-block') {
-                        boardInput.previousElementSibling.style.display = 'inline-block';
-                        boardInput.style.display = 'none';
-                        boardInput.value = boardInput.previousElementSibling.innerText;
+                    if (activeElement.style.display === 'inline-block') {
+                        activeElement.previousElementSibling.style.display = 'inline-block';
+                        activeElement.style.display = 'none';
+                        activeElement.value = boardInput.previousElementSibling.innerText;
                     }
                 }
                 break;
