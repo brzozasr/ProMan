@@ -40,7 +40,10 @@ export let dom = {
         }
 
         this.chevronsAddListener();
-        this.changeBoardTitleAddEventListeners();
+        
+        this.changeElementTitleAddEventListeners('board-title', 'board-title-input');
+        this.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
+        this.changeElementTitleAddEventListeners('card-title', 'card-title-input');
     },
     showColumns: function (columns, boardId) {
         // console.dir(boardId);
@@ -48,7 +51,10 @@ export let dom = {
 
             let columnHTML = `
                 <div class="board-column">
-                    <div class="board-column-title">${column.col_title}</div>
+                    <div class="board-column-title-container">
+                        <div class="board-column-title">${column.col_title}</div>
+                        <input class="board-column-title-input" type="text" value="${column.col_title}" />
+                    </div>
                     <div id="board-column-content-${column.col_id}" class="board-column-content">
                     </div>
                 </div>
@@ -66,9 +72,12 @@ export let dom = {
         for (let card of cards) {
             // console.log(cards);
             let cardHTML = `
-                <div class="card">
+                <div class="card" draggable="true">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                    <div class="card-title">${card.card_title}</div>
+                    <div class="card-title-container">
+                        <div class="card-title">${card.card_title}</div>
+                        <input class="card-title-input" type="text" value="${card.card_title}" />
+                    </div>
                 </div>
             `;
 
@@ -77,8 +86,8 @@ export let dom = {
             board.insertAdjacentHTML('beforeend', cardHTML);
         }
     },
-    changeBoardTitleAddEventListeners: function() {
-        let boardTitles = document.querySelectorAll('.board-title');
+    changeElementTitleAddEventListeners: function (elementTitleClassName, elementInputClassName) {
+        let boardTitles = document.querySelectorAll(`.${elementTitleClassName}`);
         // console.log(boardTitles);
         for (let boardTitle of boardTitles) {
             boardTitle.addEventListener('click', (e) => {
@@ -92,7 +101,7 @@ export let dom = {
             });
         }
 
-        let boardInputs = document.querySelectorAll('.board-title-input');
+        let boardInputs = document.querySelectorAll(`.${elementInputClassName}`);
         // console.log(boardInputs.length);
         document.addEventListener('keydown', e => {
             this.keyMapping(e, boardInputs);
