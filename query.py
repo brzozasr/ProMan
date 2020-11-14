@@ -1,4 +1,5 @@
 __query_all = {
+    # Queries to get data for JSON
     'board_select_public':
         """SELECT board_id, board_title, board_public, board_registration FROM board 
         WHERE board_public = true ORDER BY board_id;""",
@@ -41,6 +42,20 @@ __query_all = {
         c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.card_board_id 
         AND c.card_archive = false AND c.card_id = %s;""",
+
+    # Queries to set data from JSON and insert or update DB.
+    'board_update_board_title':
+        """UPDATE board SET board_title = %s WHERE board_id = %s""",
+    'board_insert_new_board':
+    """WITH ROWS AS (
+    INSERT INTO board (board_title) VALUES (%s) RETURNING board_id
+    )
+    INSERT INTO col (col_board_id, col_title)
+    VALUES
+	    ((SELECT board_id FROM ROWS), 'New'),
+	    ((SELECT board_id FROM ROWS), 'In Progress'),
+	    ((SELECT board_id FROM ROWS), 'Testing'),
+	    ((SELECT board_id FROM ROWS), 'Done');""",
 }
 
 
