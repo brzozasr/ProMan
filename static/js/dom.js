@@ -21,7 +21,7 @@ export let dom = {
                     <div class="board-header">
                         <div class="board-title-container">
                             <span class="board-title">${boards.result[key].board_title}</span>
-                            <input class="board-title-input" type="text" value="Board ${boards.result[key].board_id}" />
+                            <input class="board-title-input" type="text" value="${boards.result[key].board_title}" />
                         </div>
                         <div class="board-buttons-container">
                             <button id="board-add-${boards.result[key].board_id}" class="board-add" style="visibility: hidden;">Add Card</button>
@@ -159,7 +159,7 @@ export let dom = {
 
 
     },
-    leadNewBoard: function (boardTitle) {
+    loadNewBoard: function (boardTitle) {
         dataHandler.createNewBoard(boardTitle, function (board) {
             this.addNewBoard(board);
         });
@@ -206,8 +206,18 @@ export let dom = {
                             board_id: boardId,
                             board_title: boardTitle
                         };
-                        console.log(`data: ${JSON.stringify(data)}`);
-                        dataHandler.updateBoardName(activeElement.value);
+                        // console.log(`data: ${JSON.stringify(data)}`);
+                        dataHandler.updateBoardName(data);
+                    } else if (activeElement.className === 'new-board-txt-input') {
+                        let boardTitle = activeElement.value;
+                        let data = {
+                            board_title: boardTitle
+                        };
+                        // console.log(`data: ${JSON.stringify(data)}`);
+                        dataHandler.createNewBoard(data, function (data) {
+                            console.log(data);
+                            this.loadNewBoard(data);
+                        });
                     }
                 }
                 catch {
