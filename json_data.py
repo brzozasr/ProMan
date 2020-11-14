@@ -270,6 +270,14 @@ def get_public_card(card_id):
     return __get_card(__get_public_card_by_card_id(card_id))
 
 
+def get_public_board_dict(board_id):
+    """Return Dictionary for one board selected by ID from
+    the database with the columns and the cards.
+    Return only public data for not sign in user."""
+    return __get_board(__get_public_board_by_board_id(board_id), __get_public_columns_by_board_id(board_id),
+                       __get_public_cards_by_board_id(board_id), return_json=False)
+
+
 if __name__ == '__main__':
     # print(__get_data(__get_public_boards(), __get_public_columns(), __get_public_cards()))
     # print(__get_boards(__get_public_boards(), __get_public_columns()))
