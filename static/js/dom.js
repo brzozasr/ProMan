@@ -157,6 +157,13 @@ export let dom = {
 
 
     },
+    addNewBoard: function () {
+        let boards = document.querySelectorAll('section');
+
+        let newBoard = `
+            
+        `;
+    },
     keyMapping: function (e, boardInputs) {
         let activeElement = document.activeElement;
 
