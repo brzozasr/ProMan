@@ -46,6 +46,16 @@ __query_all = {
     # Queries to set data from JSON and insert or update DB.
     'board_update_board_title':
         """UPDATE board SET board_title = %s WHERE board_id = %s""",
+    'board_insert_new_board':
+    """WITH ROWS AS (
+    INSERT INTO board (board_title) VALUES (%s) RETURNING board_id
+    )
+    INSERT INTO col (col_board_id, col_title)
+    VALUES
+	    ((SELECT board_id FROM ROWS), 'New'),
+	    ((SELECT board_id FROM ROWS), 'In Progress'),
+	    ((SELECT board_id FROM ROWS), 'Testing'),
+	    ((SELECT board_id FROM ROWS), 'Done');""",
 }
 
 
