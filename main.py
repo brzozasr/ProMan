@@ -110,9 +110,7 @@ def get_card(card_id):
 def board_change_title():
     data = request.get_json()
     board_id = data['board_id']
-    # board_title = data['board_title']
-
-    board_title = 'Board 1'
+    board_title = data['board_title']
 
     result = db.execute_sql(query.board_update_board_title, [board_title, board_id])
 

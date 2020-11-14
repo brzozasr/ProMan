@@ -20,7 +20,7 @@ export let dom = {
                 <section class="board" id="board-${boards.result[key].board_id}">
                     <div class="board-header">
                         <div class="board-title-container">
-                            <span class="board-title">Board ${boards.result[key].board_id}</span>
+                            <span class="board-title">${boards.result[key].board_title}</span>
                             <input class="board-title-input" type="text" value="Board ${boards.result[key].board_id}" />
                         </div>
                         <div class="board-buttons-container">
