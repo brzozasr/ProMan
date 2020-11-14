@@ -134,13 +134,20 @@ def add_board():
         board_public = True
 
     result = db.execute_sql(query.board_insert_new_board, [board_title, board_public])
+    db.execute_sql(query.col_insert_default_cols, {'board_id': result})
 
-    if result is None:
-        result_dict = {'result': 'Success'}
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        json_board = None
     else:
-        result_dict = {'result': result}
+        json_board = get_public_board(result)
 
-    return jsonify(result_dict)
+    response = app.response_class(
+        response=json_board,
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
 
 
 @app.route('/test', methods=['GET', 'POST'])
