@@ -48,7 +48,7 @@ __query_all = {
         """UPDATE board SET board_title = %s WHERE board_id = %s""",
     'board_insert_new_board':
     """WITH ROWS AS (
-    INSERT INTO board (board_title) VALUES (%s) RETURNING board_id
+    INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id
     )
     INSERT INTO col (col_board_id, col_title)
     VALUES

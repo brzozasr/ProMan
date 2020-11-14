@@ -122,6 +122,46 @@ def board_change_title():
     return jsonify(result_dict)
 
 
+@app.route('/add-board', methods=['POST'])
+def add_board():
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+        board_title = None  # TODO
+        board_public = False
+    else:
+        data = request.get_json()
+        board_title = data['board_title']
+        board_public = True
+
+    result = db.execute_sql(query.board_insert_new_board, [board_title, board_public])
+
+    if result is None:
+        result_dict = {'result': 'Success'}
+    else:
+        result_dict = {'result': result}
+
+    return jsonify(result_dict)
+
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    dict_db = json.dumps(get_public_board_dict(1))
+    dict_db = json.loads(dict_db)
+    dict_js = request.get_json()
+
+    dict_db_col = dict_db['columns']
+    dict_js_col = dict_js['columns']
+
+    for db_col in dict_db_col:
+        for js_col in dict_js_col:
+            if db_col == js_col:
+                print('true')
+
+    print(type(dict_js_col))
+
+    return dict_js
+
+
 @app.route("/get-status/<int:status_id>")
 @json_response
 def get_status(status_id):
