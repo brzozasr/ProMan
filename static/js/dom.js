@@ -193,12 +193,13 @@ export let dom = {
         switch (e.key) {
             case "Enter":
                 // console.log('Enter');
+                console.log(activeElement.className);
 
                 try {
                     activeElement.previousElementSibling.innerText = activeElement.value;
                     activeElement.previousElementSibling.style.display = 'inline-block';
 
-                    console.log(activeElement.className);
+
                     if (activeElement.className === 'board-title-input') {
                         let boardId = activeElement.parentElement.parentElement.parentElement.id.split('-').reverse()[0];
                         let boardTitle = activeElement.parentElement.parentElement.firstElementChild.firstElementChild.innerText;
@@ -223,6 +224,18 @@ export let dom = {
                 catch {
                     activeElement.parentElement.parentElement.firstElementChild.lastElementChild.innerText = activeElement.value;
                     activeElement.parentElement.parentElement.firstElementChild.lastElementChild.style.display = 'inline-block';
+
+                    if (activeElement.className === 'new-board-txt-input') {
+                        let boardTitle = activeElement.value;
+                        let data = {
+                            board_title: boardTitle
+                        };
+                        // console.log(`data: ${JSON.stringify(data)}`);
+                        dataHandler.createNewBoard(data, function (data) {
+                            console.log(data);
+                            dom.loadNewBoard(JSON.parse(data));
+                        });
+                    }
                 }
 
                 activeElement.style.display = 'none';
