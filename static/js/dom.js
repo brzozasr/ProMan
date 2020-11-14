@@ -46,6 +46,10 @@ export let dom = {
         this.changeElementTitleAddEventListeners('card-title', 'card-title-input');
         this.newBoardAddButton();
         this.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+
+        document.addEventListener('keydown', e => {
+            this.keyMapping(e);
+        });
     },
     showColumns: function (columns, boardId) {
         // console.dir(boardId);
@@ -120,9 +124,7 @@ export let dom = {
 
         let boardInputs = document.querySelectorAll(`.${elementInputClassName}`);
         // console.log(boardInputs.length);
-        document.addEventListener('keydown', e => {
-            this.keyMapping(e, boardInputs);
-        });
+
 
         for (let boardInput of boardInputs) {
             boardInput.addEventListener('focusout', e => {
@@ -185,7 +187,7 @@ export let dom = {
 
         this.showColumns(board.columns, board.board_id);
     },
-    keyMapping: function (e, boardInputs) {
+    keyMapping: function (e) {
         let activeElement = document.activeElement;
 
         switch (e.key) {
@@ -196,7 +198,15 @@ export let dom = {
                     activeElement.previousElementSibling.innerText = activeElement.value;
                     activeElement.previousElementSibling.style.display = 'inline-block';
 
-                    if (activeElement.className === 'board-column-title-input') {
+                    console.log(activeElement.className);
+                    if (activeElement.className === 'board-title-input') {
+                        let boardId = activeElement.parentElement.parentElement.parentElement.id.split('-').reverse()[0];
+                        let boardTitle = activeElement.parentElement.parentElement.firstElementChild.firstElementChild.innerText;
+                        let data = {
+                            board_id: boardId,
+                            board_title: boardTitle
+                        };
+                        console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.updateBoardName(activeElement.value);
                     }
                 }
@@ -211,12 +221,10 @@ export let dom = {
             case "Escape":
                 e.preventDefault();
                 // console.log('Escape');
-                for (let boardInput of boardInputs) {
-                    if (activeElement.style.display === 'inline-block') {
-                        activeElement.previousElementSibling.style.display = 'inline-block';
-                        activeElement.style.display = 'none';
-                        activeElement.value = boardInput.previousElementSibling.innerText;
-                    }
+                if (activeElement.style.display === 'inline-block') {
+                    activeElement.previousElementSibling.style.display = 'inline-block';
+                    activeElement.style.display = 'none';
+                    activeElement.value = activeElement.previousElementSibling.innerText;
                 }
                 break;
             }

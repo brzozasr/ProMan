@@ -72,7 +72,7 @@ export let dataHandler = {
         });
     },
     updateBoardName: function (boardName) {
-        this._api_post(`/update-board-name`, boardName, (response) => {
+        this._api_post(`/board-change-title`, boardName, (response) => {
             // this._data[`allData`] = response;
             // callback(response);
         });
