@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, session
+from flask import Flask, render_template, url_for, session, request, jsonify
 from util import json_response
 from json_data import *
 
@@ -104,6 +104,24 @@ def get_card(card_id):
         mimetype='application/json'
     )
     return response
+
+
+@app.route('/board-change-title', methods=['POST'])
+def board_change_title():
+    data = request.get_json()
+    board_id = data['board_id']
+    # board_title = data['board_title']
+
+    board_title = 'Board 1'
+
+    result = db.execute_sql(query.board_update_board_title, [board_title, board_id])
+
+    if result is None:
+        result_dict = {'result': 'Success'}
+    else:
+        result_dict = {'result': result}
+
+    return jsonify(result_dict)
 
 
 @app.route("/get-status/<int:status_id>")
