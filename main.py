@@ -134,12 +134,12 @@ def add_board():
         board_public = True
 
     result = db.execute_sql(query.board_insert_new_board, [board_title, board_public])
-    db.execute_sql(query.col_insert_default_cols, {'board_id': result})
+    db.execute_sql(query.col_insert_default_cols, {'board_id': result[0][0]})
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         json_board = None
     else:
-        json_board = get_public_board(result)
+        json_board = get_public_board(result[0][0])
 
     response = app.response_class(
         response=json_board,
