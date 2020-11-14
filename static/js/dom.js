@@ -157,12 +157,33 @@ export let dom = {
 
 
     },
-    addNewBoard: function () {
+    leadNewBoard: function (boardTitle) {
+        dataHandler.createNewBoard(boardTitle, function (board) {
+            this.addNewBoard(board);
+        });
+    },
+    addNewBoard: function (board) {
         let boards = document.querySelectorAll('section');
 
         let newBoard = `
-            
+            <section class="board" id="board-${board.board_id}">
+                <div class="board-header">
+                    <div class="board-title-container">
+                        <span class="board-title">Board ${board.board_id}</span>
+                        <input class="board-title-input" type="text" value="Board ${board.board_id}" />
+                    </div>
+                    <div class="board-buttons-container">
+                        <button id="board-add-${board.board_id}" class="board-add" style="visibility: hidden;">Add Card</button>
+                        <button id="chevron-${board.board_id}" class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                </div>
+                <div id="board-columns-${board.board_id}" class="board-columns" style="display: none;"></div>
+            </section>
         `;
+
+        boards[boards.length - 1].insertAdjacentHTML('beforeend', newBoard);
+
+        this.showColumns(board.columns, board.board_id);
     },
     keyMapping: function (e, boardInputs) {
         let activeElement = document.activeElement;
@@ -174,6 +195,10 @@ export let dom = {
                 try {
                     activeElement.previousElementSibling.innerText = activeElement.value;
                     activeElement.previousElementSibling.style.display = 'inline-block';
+
+                    if (activeElement.className === 'board-column-title-input') {
+                        dataHandler.updateBoardName(activeElement.value);
+                    }
                 }
                 catch {
                     activeElement.parentElement.parentElement.firstElementChild.lastElementChild.innerText = activeElement.value;
