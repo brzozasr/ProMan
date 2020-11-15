@@ -164,7 +164,40 @@ def add_card():
         card_title = data['card_title']
 
     result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
-    db.execute_sql(query.card_insert_new_card, [card_board_id, card_col_id, result[0][0], card_title])
+    card_order = result[0][0] + 1
+    db.execute_sql(query.card_insert_new_card, [card_board_id, card_col_id, card_order, card_title])
+
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        json_board = None
+    else:
+        json_board = get_public_col(card_col_id)
+
+    response = app.response_class(
+        response=json_board,
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
+
+
+@app.route('/add-column')
+def add_column():
+    # {
+    #     "col_board_id": 2,
+    #     "col_title": "New"
+    # }
+
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+        card_board_id = None  # TODO
+        col_title = None  # TODO
+    else:
+        data = request.get_json()
+        card_board_id = data['card_board_id']
+        col_title = data['col_title']
+
+    result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         json_board = None
