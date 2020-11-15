@@ -122,6 +122,38 @@ def board_change_title():
     return jsonify(result_dict)
 
 
+@app.route('/column-change-title', methods=['POST'])
+def column_change_title():
+    data = request.get_json()
+    col_board_id = data['col_board_id']
+    col_title = data['col_title']
+
+    result = db.execute_sql(query.col_update_col_title, [col_title, col_board_id])
+
+    if result is None:
+        result_dict = {'result': 'Success'}
+    else:
+        result_dict = {'result': result}
+
+    return jsonify(result_dict)
+
+
+@app.route('/card-change-title', methods=['POST'])
+def card_change_title():
+    data = request.get_json()
+    card_id = data['card_id']
+    card_title = data['card_title']
+
+    result = db.execute_sql(query.col_update_col_title, [card_title, card_id])
+
+    if result is None:
+        result_dict = {'result': 'Success'}
+    else:
+        result_dict = {'result': result}
+
+    return jsonify(result_dict)
+
+
 @app.route('/add-board', methods=['POST'])
 def add_board():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
