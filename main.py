@@ -157,20 +157,17 @@ def add_card():
         card_board_id = None  # TODO
         card_col_id = None  # TODO
         card_title = None  # TODO
+        json_board = None  # TODO
     else:
         data = request.get_json()
         card_board_id = data['card_board_id']
         card_col_id = data['card_col_id']
         card_title = data['card_title']
+        json_board = get_public_col(card_col_id)
 
     result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
     card_order = result[0][0] + 1
     db.execute_sql(query.card_insert_new_card, [card_board_id, card_col_id, card_order, card_title])
-
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_board = None
-    else:
-        json_board = get_public_col(card_col_id)
 
     response = app.response_class(
         response=json_board,
@@ -183,26 +180,18 @@ def add_card():
 
 @app.route('/add-column')
 def add_column():
-    # {
-    #     "col_board_id": 2,
-    #     "col_title": "New"
-    # }
-
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = None  # TODO write function get data after sign in
         card_board_id = None  # TODO
         col_title = None  # TODO
+        json_board = None  # TODO
     else:
         data = request.get_json()
         card_board_id = data['card_board_id']
         col_title = data['col_title']
+        json_board = get_public_board(card_board_id)
 
-    result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
-
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_board = None
-    else:
-        json_board = get_public_col(card_col_id)
+    db.execute_sql(query.col_insert_new_col, [card_board_id, col_title])
 
     response = app.response_class(
         response=json_board,
