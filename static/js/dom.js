@@ -252,6 +252,7 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
                             dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
                             dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+                            dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
 
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
@@ -261,6 +262,14 @@ export let dom = {
                         let columnId = activeElement.id.split('-').reverse()[0];
 
                         this.addNewCard(cardTitle, columnId);
+
+
+                        dom.chevronsAddListener();
+                        dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
+                        dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
+                        dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
+                        dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+                        dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
                     }
                 }
 
