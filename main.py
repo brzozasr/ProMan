@@ -210,20 +210,20 @@ def add_card():
     return response
 
 
-@app.route('/add-column')
+@app.route('/add-column', methods=['POST'])
 def add_column():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = None  # TODO write function get data after sign in
-        card_board_id = None  # TODO
+        col_board_id = None  # TODO
         col_title = None  # TODO
         json_board = None  # TODO
     else:
         data = request.get_json()
-        card_board_id = data['card_board_id']
+        col_board_id = data['col_board_id']
         col_title = data['col_title']
-        json_board = get_public_board(card_board_id)
+        json_board = get_public_board(col_board_id)
 
-    db.execute_sql(query.col_insert_new_col, [card_board_id, col_title])
+    db.execute_sql(query.col_insert_new_col, [col_board_id, col_title])
 
     response = app.response_class(
         response=json_board,
