@@ -260,9 +260,17 @@ export let dom = {
                     } else if (activeElement.className === 'new-card-txt-input') {
                         let cardTitle = activeElement.value;
                         let columnId = activeElement.id.split('-').reverse()[0];
+                        let boardId = activeElement.parentElement.parentElement.id.split('-').reverse()[0];
 
                         this.addNewCard(cardTitle, columnId);
 
+                        let data = {
+                            card_board_id: boardId,
+                            card_col_id: columnId,
+                            card_title: cardTitle
+                        } ;
+
+                        dataHandler.createNewCard(data);
 
                         dom.chevronsAddListener();
                         dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
@@ -270,6 +278,8 @@ export let dom = {
                         dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
                         dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
                         dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+
+                        // dataHandler._data[boardId].columns[columnId].cards
                     }
                 }
 

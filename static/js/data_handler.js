@@ -87,8 +87,30 @@ export let dataHandler = {
             callback(response);
         });
     },
-    createNewCard: function (cardTitle, boardId, statusId, callback) {
+    createNewCard: function (newCardData) {
+        this._api_post(`/add-card`, newCardData, (response) => {
+            // this._data[`allData`] = response;
+            // callback(response);
+        });
+    },
+    _createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
+    },
+    updateData: function (elementType, data) {
+        switch (elementType) {
+            case 'addCard':
+                for (let board of this._data.result) {
+                    if (board.board_id === elementType.card_board_id) {
+                        for (let column of board.columns) {
+                            if (column.col_id === elementType.card_col_id) {
+                                column.cards.push(elementType);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+        }
     }
     // here comes more features
 };
