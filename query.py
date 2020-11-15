@@ -46,22 +46,32 @@ __query_all = {
     # Queries to set data from JSON and insert or update DB.
     'board_update_board_title':
         """UPDATE board SET board_title = %s WHERE board_id = %s""",
-    # 'board_insert_new_board':
-    # """WITH ROWS AS (
-    # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id
-    # )
-    # INSERT INTO col (col_board_id, col_title)
-    # VALUES
-    #     ((SELECT board_id FROM ROWS), 'New'),
-    #     ((SELECT board_id FROM ROWS), 'In Progress'),
-    #     ((SELECT board_id FROM ROWS), 'Testing'),
-    #     ((SELECT board_id FROM ROWS), 'Done');""",
     'board_insert_new_board':
         """INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id;""",
     'col_insert_default_cols':
         """INSERT INTO col (col_board_id, col_title)
         VALUES (%(board_id)s, 'New'), (%(board_id)s, 'In Progress'), (%(board_id)s, 'Testing'), 
         (%(board_id)s, 'Done');""",
+    'col_insert_new_col':
+        """INSERT INTO col (col_board_id, col_title) VALUES (%s, %s);""",
+    'card_select_max_card_order_in_col':
+        """SELECT card_id, card_col_id, card_order, card_archive FROM card
+        WHERE card_order = (
+        SELECT MAX (card_order) FROM card WHERE card_col_id = %(col_id)s
+        ) AND card_col_id = %(col_id)s AND card_archive = FALSE;""",
+    'card_insert_new_card':
+        """INSERT INTO card (card_board_id, card_col_id, card_order, card_title) 
+        VALUES (%s, %s, %s, %s);""",
+    # 'board_insert_new_board':
+        # """WITH ROWS AS (
+        # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id
+        # )
+        # INSERT INTO col (col_board_id, col_title)
+        # VALUES
+        #     ((SELECT board_id FROM ROWS), 'New'),
+        #     ((SELECT board_id FROM ROWS), 'In Progress'),
+        #     ((SELECT board_id FROM ROWS), 'Testing'),
+        #     ((SELECT board_id FROM ROWS), 'Done');""",
 }
 
 

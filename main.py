@@ -150,23 +150,49 @@ def add_board():
     return response
 
 
-@app.route('/test', methods=['GET', 'POST'])
-def test():
-    dict_db = json.dumps(get_public_board_dict(1))
-    dict_db = json.loads(dict_db)
-    dict_js = request.get_json()
-
-    dict_db_col = dict_db['columns']
-    dict_js_col = dict_js['columns']
-
-    for db_col in dict_db_col:
-        for js_col in dict_js_col:
-            if db_col == js_col:
-                print('true')
-
-    print(type(dict_js_col))
-
-    return dict_js
+# @app.route('/test', methods=['GET', 'POST'])
+# def test():  # TODO comparison jsons
+#     # Convert RealDictRow (psycopg2) to Dictionary
+#     dict_db = json.dumps(get_public_board_dict(5))
+#     dict_db = json.loads(dict_db)
+#
+#     dict_js = request.get_json()
+#
+#     dict_db_col = dict_db.get('columns')
+#     dict_js_col = dict_js.get('columns')
+#
+#     differ_col_list = []
+#     i = 0
+#     for db_col in dict_db_col:
+#         for js_col in dict_js_col:
+#             if db_col.get('col_id') == js_col.get('col_id') and db_col != js_col:
+#                 differ_col_list.append(i)
+#         i += 1
+#
+#     differ_card_db_list = []
+#     differ_card_js_list = []
+#     if len(differ_col_list) > 0:
+#         for col_id in differ_col_list:
+#             differ_card_db_list.extend(dict_db_col[col_id].get('cards'))
+#             differ_card_js_list.extend(dict_js_col[col_id].get('cards'))
+#
+#     # differ_card_db_list.sort(key=get_dict_key)
+#     # differ_card_js_list.sort(key=get_dict_key)
+#
+#     cards_to_change_list = []
+#
+#     for card_js in differ_card_js_list:
+#         for card_db in differ_card_db_list:
+#             if card_js.get('card_id') == card_db.get('card_id') and card_js != card_db:
+#                 cards_to_change_list.append(card_js)
+#
+#     # print(json.dumps(cards_to_change_list, indent=2))
+#     # print(differ_card_db_list)
+#     # print(differ_card_js_list)
+#     # print(differ_col_list)
+#     # print(type(dict_js_col))
+#
+#     return dict_js
 
 
 @app.route("/get-status/<int:status_id>")

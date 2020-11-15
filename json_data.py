@@ -237,6 +237,54 @@ def __get_card(card, return_json=True):
         return result_dict
 
 
+def __get_dict_key(dict_key):
+    return dict_key['card_id']
+
+
+def compare_dict(dict_db, dict_js, return_json=False):
+    """The function compares two Dictionaries to find differences in the cards:
+    :param dict_db: as argument set function get_public_board_dict(board_id),
+    :param dict_js: as argument set request.get_json(),
+    :param return_json: the flag for returning, if equals False returns JSON else Dictionary.
+    :returns: the list of dictionary (with the cards) or JSON."""
+
+    # Convert RealDictRow (psycopg2) to Dictionary
+    dict_db = json.dumps(dict_db)
+    dict_db = json.loads(dict_db)
+
+    dict_db_col = dict_db.get('columns')
+    dict_js_col = dict_js.get('columns')
+
+    differ_col_list = []
+    i = 0
+    for db_col in dict_db_col:
+        for js_col in dict_js_col:
+            if db_col.get('col_id') == js_col.get('col_id') and db_col != js_col:
+                differ_col_list.append(i)
+        i += 1
+
+    differ_card_db_list = []
+    differ_card_js_list = []
+    if len(differ_col_list) > 0:
+        for col_id in differ_col_list:
+            differ_card_db_list.extend(dict_db_col[col_id].get('cards'))
+            differ_card_js_list.extend(dict_js_col[col_id].get('cards'))
+
+    # differ_card_db_list.sort(key=__get_dict_key)
+    # differ_card_js_list.sort(key=__get_dict_key)
+
+    cards_to_change_list = []
+
+    for card_js in differ_card_js_list:
+        for card_db in differ_card_db_list:
+            if card_js.get('card_id') == card_db.get('card_id') and card_js != card_db:
+                cards_to_change_list.append(card_js)
+    if return_json:
+        return json.dumps(cards_to_change_list, indent=2)
+    else:
+        return cards_to_change_list
+
+
 def get_all_public_data():
     """Return JSON for all data from the database tables: board, col, card.
     Return only public data for not sign in user."""
@@ -271,7 +319,7 @@ def get_public_card(card_id):
 
 
 def get_public_board_dict(board_id):
-    """Return Dictionary for one board selected by ID from
+    """Return Dictionary (RealDict) for one board selected by ID from
     the database with the columns and the cards.
     Return only public data for not sign in user."""
     return __get_board(__get_public_board_by_board_id(board_id), __get_public_columns_by_board_id(board_id),
