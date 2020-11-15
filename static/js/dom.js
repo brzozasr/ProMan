@@ -46,6 +46,7 @@ export let dom = {
         this.changeElementTitleAddEventListeners('card-title', 'card-title-input');
         this.newBoardAddButton();
         this.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+        this.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
 
         document.addEventListener('keydown', e => {
             this.keyMapping(e);
@@ -138,13 +139,13 @@ export let dom = {
     newCardAddButton: function (columnId) {
         let addButton = `
             
-                <div class="new-card-add-button-container">
+                <div class="new-card-add-button-container" id="new-card-add-button-container-${columnId}">
                     <div class="new-card-add-button">
                         <i class="fa fa-plus"></i>
                         <span class="new-card-txt">Add new card</span>
                     </div>
                     <div class="new-card-add-button-input">
-                        <input type="text" class="new-card-txt-input" size="15" />
+                        <input id="new-card-txt-input-${columnId}" type="text" class="new-card-txt-input" size="15" />
                     </div>
                 </div>
             
@@ -152,6 +153,27 @@ export let dom = {
 
         let board = document.querySelector(`#board-column-content-${columnId}`);
         board.insertAdjacentHTML('beforeend', addButton);
+    },
+    addNewCard: function (cardTitle, columnId) {
+        let cardHTML = `
+            <div class="card" draggable="true">
+                <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                <div class="card-title-container">
+                    <span class="card-title">${cardTitle}</span>
+                    <input class="card-title-input" type="text" value="${cardTitle}" />
+                </div>
+            </div>
+        `;
+
+        let column = document.querySelector(`#board-column-content-${columnId}`);
+        column.insertAdjacentHTML('beforeend', cardHTML);
+
+        let addCardButton = document.getElementById(`new-card-add-button-container-${columnId}`);
+        addCardButton.lastElementChild.firstElementChild.value = '';
+        addCardButton.lastElementChild.style.display = 'none';
+        addCardButton.firstElementChild.style.display = 'inline-block';
+
+        column.insertAdjacentElement('beforeend', addCardButton);
     },
     loadNewBoard: function (boardTitle) {
         dataHandler.createNewBoard(boardTitle, function (board) {
@@ -234,6 +256,11 @@ export let dom = {
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
                         });
+                    } else if (activeElement.className === 'new-card-txt-input') {
+                        let cardTitle = activeElement.value;
+                        let columnId = activeElement.id.split('-').reverse()[0];
+
+                        this.addNewCard(cardTitle, columnId);
                     }
                 }
 
@@ -245,6 +272,11 @@ export let dom = {
                     activeElement.previousElementSibling.style.display = 'inline-block';
                     activeElement.style.display = 'none';
                     activeElement.value = activeElement.previousElementSibling.innerText;
+                } else if (activeElement.className === 'new-card-txt-input'
+                    && activeElement.parentElement.style.display === 'inline-block') {
+                    activeElement.parentElement.style.display = 'none';
+                    activeElement.value = '';
+                    activeElement.parentElement.previousElementSibling.style.display = 'inline-block';
                 }
                 break;
             }
@@ -280,7 +312,11 @@ export let dom = {
             // e.target.style.width = '0';
             e.currentTarget.style.display = 'none';
 
-            e.currentTarget.value = e.currentTarget.previousElementSibling.innerText;
+            if (e.currentTarget.className === 'new-card-add-button-input') {
+                e.currentTarget.firstElementChild.value = '';
+            } else {
+                e.currentTarget.value = e.currentTarget.previousElementSibling.innerText;
+            }
         }
     },
     chevronsAddListener: boardHiding.chevronsAddListener
