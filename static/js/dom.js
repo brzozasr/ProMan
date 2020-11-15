@@ -186,6 +186,25 @@ export let dom = {
 
         column.insertAdjacentElement('beforeend', addCardButton);
     },
+    addNewColumn: function (columnTitle, boardId) {
+        let columnHtml = `
+            <div class="board-column">
+                <div class="board-column-title-container">
+                    <span class="board-column-title">${columnTitle}</span>
+                    <input class="board-column-title-input" type="text" value="${columnTitle}" />
+                </div>
+                <div id="board-column-content-${column.col_id}" class="board-column-content">
+                </div>
+            </div>
+        `;
+
+        let board = document.querySelector(`#board-${boardId} .board-columns`);
+        // console.log(`nodeName: ${board.nodeName}`);
+        board.insertAdjacentHTML('beforeend', columnHTML);
+
+        this.showCards(column.cards, column.col_id);
+        this.newCardAddButton(column.col_id, column.col_board_id);
+    },
     loadNewBoard: function (boardTitle) {
         dataHandler.createNewBoard(boardTitle, function (board) {
             dom.addNewBoard(board);
