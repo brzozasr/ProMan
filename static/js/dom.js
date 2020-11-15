@@ -84,7 +84,7 @@ export let dom = {
             board.insertAdjacentHTML('beforeend', columnHTML);
 
             this.showCards(column.cards, column.col_id);
-            this.newCardAddButton(column.col_id);
+            this.newCardAddButton(column.col_id, column.col_board_id);
         }
     },
     showCards: function (cards, columnId) {
@@ -147,7 +147,7 @@ export let dom = {
 
 
     },
-    newCardAddButton: function (columnId) {
+    newCardAddButton: function (columnId, boardId) {
         let addButton = `
             
                 <div class="new-card-add-button-container" id="new-card-add-button-container-${columnId}">
@@ -156,7 +156,7 @@ export let dom = {
                         <span class="new-card-txt">Add new card</span>
                     </div>
                     <div class="new-card-add-button-input">
-                        <input id="new-card-txt-input-${columnId}" type="text" class="new-card-txt-input" size="15" />
+                        <input id="new-card-txt-input-${boardId}-${columnId}" type="text" class="new-card-txt-input" size="15" />
                     </div>
                 </div>
             
@@ -271,8 +271,8 @@ export let dom = {
                         });
                     } else if (activeElement.className === 'new-card-txt-input') {
                         let cardTitle = activeElement.value;
-                        let columnId = activeElement.id.split('-').reverse()[0];
-                        let boardId = activeElement.parentElement.parentElement.id.split('-').reverse()[0];
+                        let boardId = activeElement.id.split('-').reverse()[1];
+                        let columnId = activeElement.parentElement.parentElement.id.split('-').reverse()[0];
 
                         this.addNewCard(cardTitle, columnId);
 
@@ -282,6 +282,8 @@ export let dom = {
                             card_title: cardTitle
                         } ;
 
+                        console.log(activeElement);
+                        console.log(data);
                         dataHandler.createNewCard(data);
 
                         dom.chevronsAddListener();
