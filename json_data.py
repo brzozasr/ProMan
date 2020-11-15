@@ -190,7 +190,8 @@ def __get_board(board, columns, cards, return_json=True):
 
     for i in range(len(result_dict['columns'])):
         for card in tmp_list_cards:
-            if result_dict['columns'][i]['col_id'] == card['card_col_id']:
+            if result_dict['columns'][i]['col_id'] == card['card_col_id'] and \
+                    result_dict['columns'][i]['col_board_id'] == card['card_board_id']:
                 result_dict['columns'][i]['cards'].append(card)
 
     if return_json:
