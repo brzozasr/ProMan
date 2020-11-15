@@ -189,20 +189,27 @@ def add_card():
         card_board_id = None  # TODO
         card_col_id = None  # TODO
         card_title = None  # TODO
-        json_board = None  # TODO
     else:
         data = request.get_json()
         card_board_id = data['card_board_id']
         card_col_id = data['card_col_id']
         card_title = data['card_title']
-        json_board = get_public_col(card_col_id)
 
     result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
-    card_order = result[0][0] + 1
+    if result:
+        card_order = result[0][0] + 1
+    else:
+        card_order = 1
+
     db.execute_sql(query.card_insert_new_card, [card_board_id, card_col_id, card_order, card_title])
 
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        json_col = None
+    else:
+        json_col = get_public_col(card_col_id)
+
     response = app.response_class(
-        response=json_board,
+        response=json_col,
         status=200,
         mimetype='application/json'
     )
@@ -216,14 +223,17 @@ def add_column():
         data = None  # TODO write function get data after sign in
         col_board_id = None  # TODO
         col_title = None  # TODO
-        json_board = None  # TODO
     else:
         data = request.get_json()
         col_board_id = data['col_board_id']
         col_title = data['col_title']
-        json_board = get_public_board(col_board_id)
 
     db.execute_sql(query.col_insert_new_col, [col_board_id, col_title])
+
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        json_board = None
+    else:
+        json_board = get_public_board(col_board_id)
 
     response = app.response_class(
         response=json_board,
