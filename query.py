@@ -64,6 +64,10 @@ __query_all = {
         VALUES (%s, %s, %s, %s);""",
     'card_update_card_position':
         """UPDATE card SET card_col_id = %s, card_order = %s WHERE card_id = %s""",
+    'col_update_col_title':
+        """UPDATE col SET col_title = %s WHERE col_id = %s""",
+    'card_update_card_title':
+        """UPDATE card SET card_title = %s WHERE card_id = %s""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id

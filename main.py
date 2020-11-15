@@ -122,6 +122,38 @@ def board_change_title():
     return jsonify(result_dict)
 
 
+@app.route('/column-change-title', methods=['POST'])
+def column_change_title():
+    data = request.get_json()
+    col_board_id = data['col_board_id']
+    col_title = data['col_title']
+
+    result = db.execute_sql(query.col_update_col_title, [col_title, col_board_id])
+
+    if result is None:
+        result_dict = {'result': 'Success'}
+    else:
+        result_dict = {'result': result}
+
+    return jsonify(result_dict)
+
+
+@app.route('/card-change-title', methods=['POST'])
+def card_change_title():
+    data = request.get_json()
+    card_id = data['card_id']
+    card_title = data['card_title']
+
+    result = db.execute_sql(query.col_update_col_title, [card_title, card_id])
+
+    if result is None:
+        result_dict = {'result': 'Success'}
+    else:
+        result_dict = {'result': result}
+
+    return jsonify(result_dict)
+
+
 @app.route('/add-board', methods=['POST'])
 def add_board():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
@@ -157,20 +189,17 @@ def add_card():
         card_board_id = None  # TODO
         card_col_id = None  # TODO
         card_title = None  # TODO
+        json_board = None  # TODO
     else:
         data = request.get_json()
         card_board_id = data['card_board_id']
         card_col_id = data['card_col_id']
         card_title = data['card_title']
+        json_board = get_public_col(card_col_id)
 
     result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
     card_order = result[0][0] + 1
     db.execute_sql(query.card_insert_new_card, [card_board_id, card_col_id, card_order, card_title])
-
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_board = None
-    else:
-        json_board = get_public_col(card_col_id)
 
     response = app.response_class(
         response=json_board,
@@ -183,26 +212,18 @@ def add_card():
 
 @app.route('/add-column')
 def add_column():
-    # {
-    #     "col_board_id": 2,
-    #     "col_title": "New"
-    # }
-
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = None  # TODO write function get data after sign in
         card_board_id = None  # TODO
         col_title = None  # TODO
+        json_board = None  # TODO
     else:
         data = request.get_json()
         card_board_id = data['card_board_id']
         col_title = data['col_title']
+        json_board = get_public_board(card_board_id)
 
-    result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
-
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_board = None
-    else:
-        json_board = get_public_col(card_col_id)
+    db.execute_sql(query.col_insert_new_col, [card_board_id, col_title])
 
     response = app.response_class(
         response=json_board,
@@ -226,51 +247,6 @@ def change_card_position(board_id):
         return {'result': 'Success'}
     else:
         return {'result': result}
-
-
-# @app.route('/test', methods=['GET', 'POST'])
-# def test():  # TODO comparison jsons
-#     # Convert RealDictRow (psycopg2) to Dictionary
-#     dict_db = json.dumps(get_public_board_dict(5))
-#     dict_db = json.loads(dict_db)
-#
-#     dict_js = request.get_json()
-#
-#     dict_db_col = dict_db.get('columns')
-#     dict_js_col = dict_js.get('columns')
-#
-#     differ_col_list = []
-#     i = 0
-#     for db_col in dict_db_col:
-#         for js_col in dict_js_col:
-#             if db_col.get('col_id') == js_col.get('col_id') and db_col != js_col:
-#                 differ_col_list.append(i)
-#         i += 1
-#
-#     differ_card_db_list = []
-#     differ_card_js_list = []
-#     if len(differ_col_list) > 0:
-#         for col_id in differ_col_list:
-#             differ_card_db_list.extend(dict_db_col[col_id].get('cards'))
-#             differ_card_js_list.extend(dict_js_col[col_id].get('cards'))
-#
-#     # differ_card_db_list.sort(key=get_dict_key)
-#     # differ_card_js_list.sort(key=get_dict_key)
-#
-#     cards_to_change_list = []
-#
-#     for card_js in differ_card_js_list:
-#         for card_db in differ_card_db_list:
-#             if card_js.get('card_id') == card_db.get('card_id') and card_js != card_db:
-#                 cards_to_change_list.append(card_js)
-#
-#     # print(json.dumps(cards_to_change_list, indent=2))
-#     # print(differ_card_db_list)
-#     # print(differ_card_js_list)
-#     # print(differ_col_list)
-#     # print(type(dict_js_col))
-#
-#     return dict_js
 
 
 @app.route("/get-status/<int:status_id>")
