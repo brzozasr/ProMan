@@ -112,7 +112,8 @@ def __get_data(boards, columns, cards, return_json=True):
     for i in range(len(result_dict['result'])):
         for j in range(len(result_dict['result'][i]['columns'])):
             for card in tmp_list_cards:
-                if result_dict['result'][i]['columns'][j]['col_id'] == card['card_col_id']:
+                if result_dict['result'][i]['columns'][j]['col_id'] == card['card_col_id'] and \
+                        result_dict['result'][i]['columns'][j]['col_board_id'] == card['card_board_id']:
                     result_dict['result'][i]['columns'][j]['cards'].append(card)
 
     if return_json:
@@ -279,10 +280,15 @@ def compare_dict(dict_db, dict_js, return_json=False):
         for card_db in differ_card_db_list:
             if card_js.get('card_id') == card_db.get('card_id') and card_js != card_db:
                 cards_to_change_list.append(card_js)
+
+    data_to_query = []
+    for card in cards_to_change_list:
+        data_to_query.append([card.get('card_col_id'), card.get('card_order'), card.get('card_id')])
+
     if return_json:
         return json.dumps(cards_to_change_list, indent=2)
     else:
-        return cards_to_change_list
+        return data_to_query
 
 
 def get_all_public_data():

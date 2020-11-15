@@ -150,6 +150,21 @@ def add_board():
     return response
 
 
+@app.route('/change-card-position/<int:board_id>')
+def change_card_position(board_id):
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        cards = None  # TODO write function get data after sign in
+    else:
+        cards = compare_dict(get_public_board_dict(board_id), request.get_json())
+    print(cards)
+    # result = db.execute_multi_sql(query.card_update_card_position, cards)
+    result = None
+    if result is None:
+        return {'result': 'Success'}
+    else:
+        return {'result': result}
+
+
 # @app.route('/test', methods=['GET', 'POST'])
 # def test():  # TODO comparison jsons
 #     # Convert RealDictRow (psycopg2) to Dictionary
