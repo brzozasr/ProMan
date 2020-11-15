@@ -150,6 +150,36 @@ def add_board():
     return response
 
 
+@app.route('/add-card')
+def add_card():
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+        card_board_id = None  # TODO
+        card_col_id = None  # TODO
+        card_title = None  # TODO
+    else:
+        data = request.get_json()
+        card_board_id = data['card_board_id']
+        card_col_id = data['card_col_id']
+        card_title = data['card_title']
+
+    result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
+    db.execute_sql(query.card_insert_new_card, [card_board_id, card_col_id, result[0][0], card_title])
+
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        json_board = None
+    else:
+        json_board = get_public_col(card_col_id)
+
+    response = app.response_class(
+        response=json_board,
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
+
+
 @app.route('/change-card-position/<int:board_id>')
 def change_card_position(board_id):
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):

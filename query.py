@@ -55,7 +55,7 @@ __query_all = {
     'col_insert_new_col':
         """INSERT INTO col (col_board_id, col_title) VALUES (%s, %s);""",
     'card_select_max_card_order_in_col':
-        """SELECT card_id, card_col_id, card_order, card_archive FROM card
+        """SELECT card_order FROM card
         WHERE card_order = (
         SELECT MAX (card_order) FROM card WHERE card_col_id = %(col_id)s
         ) AND card_col_id = %(col_id)s AND card_archive = FALSE;""",
