@@ -150,7 +150,7 @@ def add_board():
     return response
 
 
-@app.route('/add-card')
+@app.route('/add-card', methods=['POST'])
 def add_card():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = None  # TODO write function get data after sign in
