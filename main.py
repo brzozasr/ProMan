@@ -156,9 +156,9 @@ def change_card_position(board_id):
         cards = None  # TODO write function get data after sign in
     else:
         cards = compare_dict(get_public_board_dict(board_id), request.get_json())
-    print(cards)
-    # result = db.execute_multi_sql(query.card_update_card_position, cards)
-    result = None
+
+    result = db.execute_multi_sql(query.card_update_card_position, cards)
+
     if result is None:
         return {'result': 'Success'}
     else:
