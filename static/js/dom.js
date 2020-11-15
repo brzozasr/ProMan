@@ -141,7 +141,7 @@ export let dom = {
     },
     newBoardAddButton: function () {
         let addButton = `
-            <section>
+            <section id="new-board-add-button">
                 <div class="new-board-add-button-container">
                     <div class="new-board-add-button">
                         <i class="fa fa-plus"></i>
@@ -161,7 +161,7 @@ export let dom = {
     },
     loadNewBoard: function (boardTitle) {
         dataHandler.createNewBoard(boardTitle, function (board) {
-            this.addNewBoard(board);
+            dom.addNewBoard(board);
         });
     },
     addNewBoard: function (board) {
@@ -171,8 +171,8 @@ export let dom = {
             <section class="board" id="board-${board.board_id}">
                 <div class="board-header">
                     <div class="board-title-container">
-                        <span class="board-title">Board ${board.board_id}</span>
-                        <input class="board-title-input" type="text" value="Board ${board.board_id}" />
+                        <span class="board-title">${board.board_title}</span>
+                        <input class="board-title-input" type="text" value="${board.board_title}" />
                     </div>
                     <div class="board-buttons-container">
                         <button id="board-add-${board.board_id}" class="board-add" style="visibility: hidden;">Add Card</button>
@@ -183,7 +183,7 @@ export let dom = {
             </section>
         `;
 
-        boards[boards.length - 1].insertAdjacentHTML('beforeend', newBoard);
+        boards[boards.length - 1].insertAdjacentHTML('afterend', newBoard);
 
         this.showColumns(board.columns, board.board_id);
     },
@@ -209,22 +209,9 @@ export let dom = {
                         };
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.updateBoardName(data);
-                    } else if (activeElement.className === 'new-board-txt-input') {
-                        let boardTitle = activeElement.value;
-                        let data = {
-                            board_title: boardTitle
-                        };
-                        // console.log(`data: ${JSON.stringify(data)}`);
-                        dataHandler.createNewBoard(data, function (data) {
-                            console.log(data);
-                            this.loadNewBoard(data);
-                        });
                     }
                 }
                 catch {
-                    activeElement.parentElement.parentElement.firstElementChild.lastElementChild.innerText = activeElement.value;
-                    activeElement.parentElement.parentElement.firstElementChild.lastElementChild.style.display = 'inline-block';
-
                     if (activeElement.className === 'new-board-txt-input') {
                         let boardTitle = activeElement.value;
                         let data = {
@@ -233,8 +220,15 @@ export let dom = {
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.createNewBoard(data, function (data) {
                             console.log(data);
-                            dom.loadNewBoard(JSON.parse(data));
+                            dom.addNewBoard(data);
+
+                            let addNewBoardButton = document.getElementById('new-board-add-button');
+
+                            let boardsContainer = document.querySelector('.board-container');
+                            boardsContainer.insertAdjacentElement("beforeend", addNewBoardButton);
                         });
+                        
+                        activeElement.parentElement.previousElementSibling.style.display = 'inline-block';
                     }
                 }
 
