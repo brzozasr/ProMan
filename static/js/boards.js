@@ -14,6 +14,7 @@ export let boardHiding = {
 
         let i = 0;
 
+        // console.log(this.toggleButtons);
         this.toggleButtons.forEach(chevronButton => {
             chevronButton.removeEventListener('click', boardHiding.showBoard);
             chevronButton.removeEventListener('click', boardHiding.hideBoard);
@@ -35,7 +36,8 @@ export let boardHiding = {
         let chevronButtonParent = e.currentTarget.parentElement;
         let boardHeaderParent = chevronButtonParent.parentElement.parentElement;
 
-        let boardId = e.currentTarget.getAttribute('id').slice(-1)[0];
+        let boardId = e.currentTarget.getAttribute('id').split('-').reverse()[0];
+        // let boardId = e.currentTarget.getAttribute('id').slice(-1)[0];
         let boardColumns = document.getElementById(`board-columns-${boardId}`);
 
 

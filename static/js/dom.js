@@ -95,31 +95,12 @@ export let dom = {
     changeElementTitleAddEventListeners: function (elementTitleClassName, elementInputClassName) {
         let boardTitles = document.querySelectorAll(`.${elementTitleClassName}`);
         // console.log(boardTitles);
+
         for (let boardTitle of boardTitles) {
-            boardTitle.addEventListener('click', (e) => {
-                // console.log(e.target.nodeName);
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling.style.display = 'inline-block';
-
-                try {
-                    e.currentTarget.nextElementSibling.querySelector('input').focus();
-                    e.currentTarget.nextElementSibling.querySelector('input').select();
-                }
-                catch {
-                    e.currentTarget.nextElementSibling.focus();
-                    e.currentTarget.nextElementSibling.select();
-                }
-
-                // if (e.currentTarget.nextElementSibling.querySelector('input').focus() === null) {
-                //     e.currentTarget.nextElementSibling.focus();
-                // }
-                // if (e.currentTarget.nextElementSibling.querySelector('input').select() === null) {
-                //     e.currentTarget.nextElementSibling.select();
-                // }
-
-                // e.target.nextElementSibling.style.width = '150px';
-                // console.log(`p1: ${e.target.classList}`);
-            });
+            boardTitle.removeEventListener('click', this.changeElementTitleClick);
+        }
+        for (let boardTitle of boardTitles) {
+            boardTitle.addEventListener('click', this.changeElementTitleClick);
         }
 
         let boardInputs = document.querySelectorAll(`.${elementInputClassName}`);
@@ -127,16 +108,10 @@ export let dom = {
 
 
         for (let boardInput of boardInputs) {
-            boardInput.addEventListener('focusout', e => {
-                // console.log('focus out');
-                if (e.currentTarget.style.display === 'inline-block') {
-                    e.currentTarget.previousElementSibling.style.display = 'inline-block';
-                    // e.target.style.width = '0';
-                    e.currentTarget.style.display = 'none';
-
-                    e.currentTarget.value = e.currentTarget.previousElementSibling.innerText;
-                }
-            })
+            boardInput.removeEventListener('focusout', this.changeElementTitleFocus);
+        }
+        for (let boardInput of boardInputs) {
+            boardInput.addEventListener('focusout', this.changeElementTitleFocus);
         }
     },
     newBoardAddButton: function () {
@@ -210,6 +185,8 @@ export let dom = {
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.updateBoardName(data);
                     }
+
+                    activeElement.style.display = 'none';
                 }
                 catch {
                     if (activeElement.className === 'new-board-txt-input') {
@@ -226,13 +203,20 @@ export let dom = {
 
                             let boardsContainer = document.querySelector('.board-container');
                             boardsContainer.insertAdjacentElement("beforeend", addNewBoardButton);
+
+                            activeElement.parentElement.previousElementSibling.style.display = 'inline-block';
+
+                            dom.chevronsAddListener();
+                            dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
+                            dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
+                            dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
+                            dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+
+                            activeElement.value = '';
+                            activeElement.parentElement.style.display = 'none';;
                         });
-                        
-                        activeElement.parentElement.previousElementSibling.style.display = 'inline-block';
                     }
                 }
-
-                activeElement.style.display = 'none';
 
                 break;
             case "Escape":
@@ -245,6 +229,40 @@ export let dom = {
                 }
                 break;
             }
+    },
+    changeElementTitleClick: function(e) {
+        // console.log(e.target.nodeName);
+        e.currentTarget.style.display = 'none';
+        e.currentTarget.nextElementSibling.style.display = 'inline-block';
+
+        try {
+            e.currentTarget.nextElementSibling.querySelector('input').focus();
+            e.currentTarget.nextElementSibling.querySelector('input').select();
+        }
+        catch {
+            e.currentTarget.nextElementSibling.focus();
+            e.currentTarget.nextElementSibling.select();
+        }
+
+        // if (e.currentTarget.nextElementSibling.querySelector('input').focus() === null) {
+        //     e.currentTarget.nextElementSibling.focus();
+        // }
+        // if (e.currentTarget.nextElementSibling.querySelector('input').select() === null) {
+        //     e.currentTarget.nextElementSibling.select();
+        // }
+
+        // e.target.nextElementSibling.style.width = '150px';
+        // console.log(`p1: ${e.target.classList}`);
+    },
+    changeElementTitleFocus: function (e) {
+        // console.log('focus out');
+        if (e.currentTarget.style.display === 'inline-block') {
+            e.currentTarget.previousElementSibling.style.display = 'inline-block';
+            // e.target.style.width = '0';
+            e.currentTarget.style.display = 'none';
+
+            e.currentTarget.value = e.currentTarget.previousElementSibling.innerText;
+        }
     },
     chevronsAddListener: boardHiding.chevronsAddListener
 };
