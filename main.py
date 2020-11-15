@@ -210,7 +210,7 @@ def add_card():
     return response
 
 
-@app.route('/add-column')
+@app.route('/add-column', methods=['POST'])
 def add_column():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = None  # TODO write function get data after sign in

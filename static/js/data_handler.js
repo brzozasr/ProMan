@@ -94,7 +94,7 @@ export let dataHandler = {
             console.log(response);
         });
     },
-    createNewColumn: function () {
+    createNewColumn: function (newColumnData) {
         this._api_post(`/add-column`, newColumnData, (response) => {
             // this._data[`allData`] = response;
             // callback(response);
