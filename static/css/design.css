@@ -302,3 +302,41 @@ section.board{
 .new-board-add-button-input:focus {
     outline-color: #0b8eff;
 }
+
+
+
+.new-card-add-button-container {
+    position: relative;
+    display: inline-block;
+    margin-left: 0;
+    line-height: 25px;
+    padding: 5px 5px 5px 5px;
+    height: 25px;
+    width: 190px;
+    background-color: rgba(205, 205, 205, 0.3);
+    cursor: pointer;
+    color: #787878;
+    border: 0px solid red;
+}
+
+.new-card-add-button {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.new-card-add-button-container:hover {
+    background-color: rgba(175, 175, 175, 0.3);
+}
+
+.new-card-add-button-input {
+    position: relative;
+    display: none;
+    color: white;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.new-card-add-button-input:focus {
+    outline-color: #0b8eff;
+}

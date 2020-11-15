@@ -72,6 +72,7 @@ export let dom = {
             board.insertAdjacentHTML('beforeend', columnHTML);
 
             this.showCards(column.cards, column.col_id);
+            this.newCardAddButton(column.col_id);
         }
     },
     showCards: function (cards, columnId) {
@@ -133,6 +134,24 @@ export let dom = {
         boardsContainer.insertAdjacentHTML("beforeend", addButton);
 
 
+    },
+    newCardAddButton: function (columnId) {
+        let addButton = `
+            
+                <div class="new-card-add-button-container">
+                    <div class="new-card-add-button">
+                        <i class="fa fa-plus"></i>
+                        <span class="new-card-txt">Add new card</span>
+                    </div>
+                    <div class="new-card-add-button-input">
+                        <input type="text" class="new-card-txt-input" size="15" />
+                    </div>
+                </div>
+            
+        `;
+
+        let board = document.querySelector(`#board-column-content-${columnId}`);
+        board.insertAdjacentHTML('beforeend', addButton);
     },
     loadNewBoard: function (boardTitle) {
         dataHandler.createNewBoard(boardTitle, function (board) {
@@ -213,7 +232,7 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
 
                             activeElement.value = '';
-                            activeElement.parentElement.style.display = 'none';;
+                            activeElement.parentElement.style.display = 'none';
                         });
                     }
                 }
