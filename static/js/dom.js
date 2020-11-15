@@ -24,7 +24,17 @@ export let dom = {
                             <input class="board-title-input" type="text" value="${boards.result[key].board_title}" />
                         </div>
                         <div class="board-buttons-container">
-                            <button id="board-add-${boards.result[key].board_id}" class="board-add" style="visibility: hidden;">Add Card</button>
+                            <div class="new-column-add-button-container board-add" style="visibility: hidden;">
+                                <div class="new-column-add-button">
+                                    <i class="fa fa-plus"></i>
+                                    <span class="new-column-txt">Add new column</span>
+                                </div>
+                                <div class="new-column-add-button-input">
+                                    <input type="text" class="new-column-txt-input" size="15" />
+                                </div>
+                            </div>
+                            
+                            
                             <button id="chevron-${boards.result[key].board_id}" class="board-toggle"><i class="fas fa-chevron-down"></i></button>
                         </div>
                     </div>
@@ -47,6 +57,7 @@ export let dom = {
         this.newBoardAddButton();
         this.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
         this.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+        this.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
 
         document.addEventListener('keydown', e => {
             this.keyMapping(e);
@@ -253,6 +264,7 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
                             dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+                            dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
 
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
@@ -278,6 +290,30 @@ export let dom = {
                         dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
                         dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
                         dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+                        dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+
+                        // dataHandler._data[boardId].columns[columnId].cards
+                    } else if (activeElement.className === 'new-column-txt-input') {
+                        let boardId = activeElement.parentElement.parentElement.parentElement.parentElement.parentElement.id.split('-').reverse()[0];
+                        let columnTitle = activeElement.value;
+
+                        // console.log(`boardId: ${boardId}, columnTitle: ${columnTitle}`);
+                        // this.addNewCard(cardTitle, columnId);
+
+                        let data = {
+                            col_board_id: boardId,
+                            col_title: columnTitle
+                        } ;
+
+                        dataHandler.createNewColumn(data);
+
+                        dom.chevronsAddListener();
+                        dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
+                        dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
+                        dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
+                        dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+                        dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+                        dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
 
                         // dataHandler._data[boardId].columns[columnId].cards
                     }
