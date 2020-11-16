@@ -91,7 +91,7 @@ export let dom = {
         for (let card of cards) {
             // console.log(cards);
             let cardHTML = `
-                <div class="card" draggable="true">
+                <div class="card" draggable="true" data-card-id="${card.card_id}" data-card-order="${card.card_order}" data-column-id="${card.card_col_id}" data-board-id="${card.card_board_id}">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card.card_title}</span>
