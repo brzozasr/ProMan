@@ -136,7 +136,7 @@ section.board{
     background: var(--status-4);
 }
 
-.card-remove{
+.card-remove, .column-remove{
     display: block;
     position: absolute;
     top: 4px;
@@ -144,6 +144,15 @@ section.board{
     font-size: 12px;
     cursor: pointer;
 }
+
+.column-remove {
+    color: #cdcdcd;
+}
+
+.column-remove:hover {
+    color: #adadad;
+}
+
 
 .card-title{
     padding-right: 16px;

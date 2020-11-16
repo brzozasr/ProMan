@@ -60,6 +60,7 @@ export let dom = {
         this.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
         this.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
         this.removeCardAddEventListener();
+        this.removeColumnAddEventListener();
 
         document.addEventListener('keydown', e => {
             this.keyMapping(e);
@@ -72,10 +73,11 @@ export let dom = {
         for (let column of columns) {
 
             let columnHTML = `
-                <div class="board-column">
+                <div id="column-${column.col_id}" class="board-column">
                     <div class="board-column-title-container">
                         <span class="board-column-title">${column.col_title}</span>
                         <input class="board-column-title-input" type="text" value="${column.col_title}" />
+                        <div class="column-remove"><i class="fas fa-trash-alt"></i></div>
                     </div>
                     <div id="board-column-content-${column.col_id}" class="board-column-content">
                     </div>
@@ -211,10 +213,11 @@ export let dom = {
         let {col_title, col_board_id, col_id, cards} = data.columns.reverse()[0];
 
         let columnHTML = `
-            <div class="board-column">
+            <div id="column-${col_id}" class="board-column">
                 <div class="board-column-title-container">
                     <span class="board-column-title">${col_title}</span>
                     <input class="board-column-title-input" type="text" value="${col_title}" />
+                    <div class="column-remove"><i class="fas fa-trash-alt"></i></div>
                 </div>
                 <div id="board-column-content-${col_id}" class="board-column-content">
                 </div>
@@ -277,6 +280,24 @@ export let dom = {
             trashIcon.addEventListener('click', dom.removeCard);
         }
     },
+    removeColumn: function (e) {
+        let columnId = e.currentTarget.parentElement.parentElement.id.split('-').reverse()[0];
+        let column = document.getElementById(`column-${columnId}`);
+        column.remove();
+
+        let columnData = {
+            col_id: columnId
+        };
+
+        dataHandler.removeColumn(columnData);
+    },
+    removeColumnAddEventListener: function () {
+        let trashIcons = document.querySelectorAll('.column-remove');
+        for (let trashIcon of trashIcons) {
+            trashIcon.removeEventListener('click', dom.removeColumn);
+            trashIcon.addEventListener('click', dom.removeColumn);
+        }
+    },
     keyMapping: function (e) {
         let activeElement = document.activeElement;
 
@@ -329,6 +350,7 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
                             dom.removeCardAddEventListener();
+                            dom.removeColumnAddEventListener();
 
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
@@ -357,6 +379,8 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+                            dom.removeCardAddEventListener();
+                            dom.removeColumnAddEventListener();
                         });
 
 

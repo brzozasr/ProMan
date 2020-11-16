@@ -108,6 +108,13 @@ export let dataHandler = {
             console.log(response);
         });
     },
+    removeColumn: function (columnData) {
+        this._api_post(`/delete-column`, columnData, (response) => {
+            // this._data[`allData`] = response;
+            // callback(response);
+            console.log(response);
+        });
+    },
     _createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
     },
