@@ -1,6 +1,7 @@
 // It uses data_handler.js to visualize elements
 import { dataHandler } from "./data_handler.js";
 import { boardHiding } from "./boards.js";
+import { dragAndDrop } from "./drag_and_drop.js";
 
 export let dom = {
     init: function () {
@@ -62,6 +63,8 @@ export let dom = {
         document.addEventListener('keydown', e => {
             this.keyMapping(e);
         });
+
+        dragAndDrop.init();
     },
     showColumns: function (columns, boardId) {
         // console.dir(boardId);
@@ -97,13 +100,15 @@ export let dom = {
                 boardId: card.card_board_id
             };
             let cardHTML = `
-                <div class="card" draggable="true" data-cardData="${JSON.stringify(cardData)}">
+                
+                <div class="card" id="card-${cardData.cardId}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card.card_title}</span>
                         <input class="card-title-input" type="text" value="${card.card_title}" />
                     </div>
                 </div>
+                
             `;
 
             let board = document.querySelector(`#board-column-content-${columnId}`);
