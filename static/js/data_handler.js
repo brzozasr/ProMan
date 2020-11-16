@@ -102,9 +102,9 @@ export let dataHandler = {
         });
     },
     removeCard: function (cardData) {
-        this._api_post(`/add-column`, newColumnData, (response) => {
+        this._api_post(`/delete-card`, cardData, (response) => {
             // this._data[`allData`] = response;
-            callback(response);
+            // callback(response);
             console.log(response);
         });
     },

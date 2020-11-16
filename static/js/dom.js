@@ -59,6 +59,7 @@ export let dom = {
         this.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
         this.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
         this.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+        this.removeCardAddEventListener();
 
         document.addEventListener('keydown', e => {
             this.keyMapping(e);
@@ -187,7 +188,7 @@ export let dom = {
             };
 
         let cardHTML = `
-            <div class="card" draggable="true" data-cardData="${JSON.stringify(cardData)}">
+            <div class="card" id="card-${card_id}" draggable="true" data-card-data="${JSON.stringify(cardData)}">
                 <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                 <div class="card-title-container">
                     <span class="card-title">${card_title}</span>
@@ -255,6 +256,27 @@ export let dom = {
 
         this.showColumns(board.columns, board.board_id);
     },
+    removeCard: function (e) {
+        let cardId = e.currentTarget.parentElement.id.split('-').reverse()[0];
+        let card = document.getElementById(`card-${cardId}`);
+        card.remove();
+
+        let cardDataSet = JSON.parse(card.dataset.cardData);
+        dragAndDrop.correctCardOrder(cardDataSet.columnId);
+
+        let cardData = {
+            card_id: cardId
+        };
+
+        dataHandler.removeCard(cardData);
+    },
+    removeCardAddEventListener: function () {
+        let trashIcons = document.querySelectorAll('.card-remove');
+        for (let trashIcon of trashIcons) {
+            trashIcon.removeEventListener('click', dom.removeCard);
+            trashIcon.addEventListener('click', dom.removeCard);
+        }
+    },
     keyMapping: function (e) {
         let activeElement = document.activeElement;
 
@@ -306,6 +328,7 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+                            dom.removeCardAddEventListener();
 
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
