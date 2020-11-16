@@ -90,8 +90,14 @@ export let dom = {
     showCards: function (cards, columnId) {
         for (let card of cards) {
             // console.log(cards);
+            let cardData = {
+                cardId: card.card_id,
+                cardOrder: card.card_order,
+                columnId: card.card_col_id,
+                boardId: card.card_board_id
+            };
             let cardHTML = `
-                <div class="card" draggable="true" data-card-id="${card.card_id}" data-card-order="${card.card_order}" data-column-id="${card.card_col_id}" data-board-id="${card.card_board_id}">
+                <div class="card" draggable="true" data-cardData="${JSON.stringify(cardData)}">
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card.card_title}</span>
@@ -167,8 +173,16 @@ export let dom = {
     },
     addNewCard: function (data) {
         let {card_id, card_order, card_title} = data.cards.reverse()[0];
+
+        let cardData = {
+                cardId: card_id,
+                cardOrder: card_order,
+                columnId: data.col_id,
+                boardId: data.col_board_id
+            };
+
         let cardHTML = `
-            <div class="card" draggable="true" data-card-id="${card_id}" data-card-order="${card_order}" data-column-id="${data.col_id}" data-board-id="${data.col_board_id}">
+            <div class="card" draggable="true" data-cardData="${JSON.stringify(cardData)}">
                 <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                 <div class="card-title-container">
                     <span class="card-title">${card_title}</span>
