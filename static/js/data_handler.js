@@ -87,10 +87,10 @@ export let dataHandler = {
             callback(response);
         });
     },
-    createNewCard: function (newCardData) {
+    createNewCard: function (newCardData, callback) {
         this._api_post(`/add-card`, newCardData, (response) => {
             // this._data[`allData`] = response;
-            // callback(response);
+            callback(response);
             console.log(response);
         });
     },

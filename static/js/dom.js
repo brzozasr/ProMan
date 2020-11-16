@@ -165,21 +165,22 @@ export let dom = {
         let board = document.querySelector(`#board-column-content-${columnId}`);
         board.insertAdjacentHTML('beforeend', addButton);
     },
-    addNewCard: function (cardTitle, columnId) {
+    addNewCard: function (data) {
+        let {card_id, card_order, card_title} = data.cards.reverse()[0];
         let cardHTML = `
-            <div class="card" draggable="true">
+            <div class="card" draggable="true" data-card-id="${card_id}" data-card-order="${card_order}" data-column-id="${data.col_id}" data-board-id="${data.col_board_id}">
                 <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                 <div class="card-title-container">
-                    <span class="card-title">${cardTitle}</span>
-                    <input class="card-title-input" type="text" value="${cardTitle}" />
+                    <span class="card-title">${card_title}</span>
+                    <input class="card-title-input" type="text" value="${card_title}" />
                 </div>
             </div>
         `;
 
-        let column = document.querySelector(`#board-column-content-${columnId}`);
+        let column = document.querySelector(`#board-column-content-${data.col_id}`);
         column.insertAdjacentHTML('beforeend', cardHTML);
 
-        let addCardButton = document.getElementById(`new-card-add-button-container-${columnId}`);
+        let addCardButton = document.getElementById(`new-card-add-button-container-${data.col_id}`);
         addCardButton.lastElementChild.firstElementChild.value = '';
         addCardButton.lastElementChild.style.display = 'none';
         addCardButton.firstElementChild.style.display = 'inline-block';
@@ -293,25 +294,28 @@ export let dom = {
                         let boardId = activeElement.id.split('-').reverse()[1];
                         let columnId = activeElement.parentElement.parentElement.id.split('-').reverse()[0];
 
-                        this.addNewCard(cardTitle, columnId);
-
                         let data = {
                             card_board_id: boardId,
                             card_col_id: columnId,
                             card_title: cardTitle
                         } ;
 
-                        console.log(activeElement);
-                        console.log(data);
-                        dataHandler.createNewCard(data);
+                        // console.log(activeElement);
+                        // console.log(data);
+                        dataHandler.createNewCard(data, function (data) {
+                            console.log(data);
+                            dom.addNewCard(data);
 
-                        dom.chevronsAddListener();
-                        dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
-                        dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
-                        dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
-                        dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
-                        dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
-                        dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+                            dom.chevronsAddListener();
+                            dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
+                            dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
+                            dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
+                            dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+                            dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+                            dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+                        });
+
+
 
                         // dataHandler._data[boardId].columns[columnId].cards
                     } else if (activeElement.className === 'new-column-txt-input') {
