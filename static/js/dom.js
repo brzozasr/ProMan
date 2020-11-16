@@ -187,24 +187,26 @@ export let dom = {
 
         column.insertAdjacentElement('beforeend', addCardButton);
     },
-    addNewColumn: function (columnTitle, boardId) {
-        let columnHtml = `
+    addNewColumn: function (data) {
+        let {col_title, col_board_id, col_id, cards} = data.columns.reverse()[0];
+
+        let columnHTML = `
             <div class="board-column">
                 <div class="board-column-title-container">
-                    <span class="board-column-title">${columnTitle}</span>
-                    <input class="board-column-title-input" type="text" value="${columnTitle}" />
+                    <span class="board-column-title">${col_title}</span>
+                    <input class="board-column-title-input" type="text" value="${col_title}" />
                 </div>
-                <div id="board-column-content-${column.col_id}" class="board-column-content">
+                <div id="board-column-content-${col_id}" class="board-column-content">
                 </div>
             </div>
         `;
 
-        let board = document.querySelector(`#board-${boardId} .board-columns`);
+        let board = document.querySelector(`#board-${col_board_id} .board-columns`);
         // console.log(`nodeName: ${board.nodeName}`);
         board.insertAdjacentHTML('beforeend', columnHTML);
 
-        this.showCards(column.cards, column.col_id);
-        this.newCardAddButton(column.col_id, column.col_board_id);
+        this.showCards(cards, col_id);
+        this.newCardAddButton(col_id, col_board_id);
     },
     loadNewBoard: function (boardTitle) {
         dataHandler.createNewBoard(boardTitle, function (board) {
@@ -330,15 +332,20 @@ export let dom = {
                             col_title: columnTitle
                         } ;
 
-                        dataHandler.createNewColumn(data);
+                        dataHandler.createNewColumn(data, function (data) {
+                            console.log(data);
+                            dom.addNewColumn(data);
 
-                        dom.chevronsAddListener();
-                        dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
-                        dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
-                        dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
-                        dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
-                        dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
-                        dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+                            dom.chevronsAddListener();
+                            dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
+                            dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
+                            dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
+                            dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+                            dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+                            dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+                        });
+
+
 
                         // dataHandler._data[boardId].columns[columnId].cards
                     }

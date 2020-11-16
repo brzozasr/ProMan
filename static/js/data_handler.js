@@ -94,10 +94,10 @@ export let dataHandler = {
             console.log(response);
         });
     },
-    createNewColumn: function (newColumnData) {
+    createNewColumn: function (newColumnData, callback) {
         this._api_post(`/add-column`, newColumnData, (response) => {
             // this._data[`allData`] = response;
-            // callback(response);
+            callback(response);
             console.log(response);
         });
     },
