@@ -445,6 +445,10 @@ export let dom = {
                             dom.removeCardAddEventListener();
                             dom.removeColumnAddEventListener();
                             dom.removeBoardAddEventListener();
+
+                            activeElement.value = '';
+                            activeElement.parentElement.style.display = 'none';
+                            activeElement.parentElement.previousElementSibling.style.display = 'inline-block';
                         });
 
 
