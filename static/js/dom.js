@@ -192,7 +192,7 @@ export let dom = {
             };
 
         let cardHTML = `
-            <div class="card" id="card-${card_id}" draggable="true" data-card-data="${JSON.stringify(cardData)}">
+            <div class="card" id="card-${card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
                 <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                 <div class="card-title-container">
                     <span class="card-title">${card_title}</span>
@@ -442,6 +442,9 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
                             dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+                            dom.removeCardAddEventListener();
+                            dom.removeColumnAddEventListener();
+                            dom.removeBoardAddEventListener();
                         });
 
 
