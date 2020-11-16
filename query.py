@@ -58,7 +58,7 @@ __query_all = {
         """SELECT card_order FROM card
         WHERE card_order = (
         SELECT MAX (card_order) FROM card WHERE card_col_id = %(col_id)s
-        ) AND card_col_id = %(col_id)s AND card_archive = FALSE;""",
+        ) AND card_col_id = %(col_id)s AND card_archive = false;""",
     'card_insert_new_card':
         """INSERT INTO card (card_board_id, card_col_id, card_order, card_title) 
         VALUES (%s, %s, %s, %s);""",
@@ -79,6 +79,10 @@ __query_all = {
     ORDER BY card_order""",
     'card_update_card_order_by_card_id':
     """UPDATE card SET card_order = %s WHERE card_id = %s""",
+    'card_update_card_archive':
+    """UPDATE card SET card_order = 0, card_archive = true WHERE card_id = %s AND card_archive = false""",
+    'card_update_card_unarchive':
+    """UPDATE card SET card_order = %s, card_archive = false WHERE card_id = %s AND card_archive = true""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id

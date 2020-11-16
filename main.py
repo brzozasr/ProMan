@@ -329,6 +329,72 @@ def delete_card():
     return response
 
 
+@app.route('/archive-card', methods=['POST'])
+def archive_card():
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+        card_id = None  # TODO
+        card_col_id = None  # TODO
+    else:
+        data = request.get_json()
+        card_id = data['card_id']
+        card_col_id = data['card_col_id']
+
+    db.execute_sql(query.card_update_card_archive, [card_id])
+
+    cards_order = db.execute_sql(query.card_select_by_card_col_id, [card_col_id])  # card_col_id
+    cards_list = set_card_order(cards_order)
+
+    if cards_list:
+        db.execute_multi_sql(query.card_update_card_order_by_card_id, cards_list)
+
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        json_column = None  # TODO
+    else:
+        json_column = get_public_col(card_col_id)  # card_col_id
+
+    response = app.response_class(
+        response=json_column,
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
+
+
+@app.route('/unarchive-card', methods=['POST'])
+def unarchive_card():
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO write function get data after sign in
+        card_id = None  # TODO
+        card_col_id = None  # TODO
+    else:
+        data = request.get_json()
+        card_id = data['card_id']
+        card_col_id = data['card_col_id']
+
+    result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
+    if result:
+        card_order = result[0][0] + 1
+    else:
+        card_order = 1
+
+    db.execute_sql(query.card_update_card_unarchive, [card_order, card_id])
+
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        json_column = None  # TODO
+    else:
+        json_column = get_public_col(card_col_id)  # card_col_id
+
+    response = app.response_class(
+        response=json_column,
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
+
+
 @app.route('/change-card-position/<int:board_id>', methods=['POST'])
 def change_card_position(board_id):
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
