@@ -37,6 +37,7 @@ export let dom = {
                             
                             
                             <button id="chevron-${boards.result[key].board_id}" class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                            <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
                         </div>
                     </div>
                     <div id="board-columns-${boards.result[key].board_id}" class="board-columns" style="display: none;"></div>
@@ -61,6 +62,7 @@ export let dom = {
         this.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
         this.removeCardAddEventListener();
         this.removeColumnAddEventListener();
+        this.removeBoardAddEventListener();
 
         document.addEventListener('keydown', e => {
             this.keyMapping(e);
@@ -247,8 +249,19 @@ export let dom = {
                         <input class="board-title-input" type="text" value="${board.board_title}" />
                     </div>
                     <div class="board-buttons-container">
-                        <button id="board-add-${board.board_id}" class="board-add" style="visibility: hidden;">Add Card</button>
+                        <div class="new-column-add-button-container board-add" style="visibility: hidden;">
+                            <div class="new-column-add-button">
+                                <i class="fa fa-plus"></i>
+                                <span class="new-column-txt">Add new column</span>
+                            </div>
+                            <div class="new-column-add-button-input">
+                                <input type="text" class="new-column-txt-input" size="15" />
+                            </div>
+                        </div>
+                        
+                        
                         <button id="chevron-${board.board_id}" class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                        <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
                     </div>
                 </div>
                 <div id="board-columns-${board.board_id}" class="board-columns" style="display: none;"></div>
@@ -296,6 +309,24 @@ export let dom = {
         for (let trashIcon of trashIcons) {
             trashIcon.removeEventListener('click', dom.removeColumn);
             trashIcon.addEventListener('click', dom.removeColumn);
+        }
+    },
+    removeBoard: function (e) {
+        let boardId = e.currentTarget.previousElementSibling.id.split('-').reverse()[0];
+        let board = document.getElementById(`board-${boardId}`);
+        board.remove();
+
+        let boardData = {
+            board_id: boardId
+        };
+
+        dataHandler.removeBoard(boardData);
+    },
+    removeBoardAddEventListener: function () {
+        let trashIcons = document.querySelectorAll('.board-remove');
+        for (let trashIcon of trashIcons) {
+            trashIcon.removeEventListener('click', dom.removeBoard);
+            trashIcon.addEventListener('click', dom.removeBoard);
         }
     },
     keyMapping: function (e) {
@@ -351,6 +382,7 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
                             dom.removeCardAddEventListener();
                             dom.removeColumnAddEventListener();
+                            dom.removeBoardAddEventListener();
 
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
@@ -381,6 +413,7 @@ export let dom = {
                             dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
                             dom.removeCardAddEventListener();
                             dom.removeColumnAddEventListener();
+                            dom.removeBoardAddEventListener();
                         });
 
 

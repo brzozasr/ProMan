@@ -115,6 +115,13 @@ export let dataHandler = {
             console.log(response);
         });
     },
+    removeBoard: function (boardData) {
+        this._api_post(`/delete-board`, boardData, (response) => {
+            // this._data[`allData`] = response;
+            // callback(response);
+            console.log(response);
+        });
+    },
     _createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
     },
