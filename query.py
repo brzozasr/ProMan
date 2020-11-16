@@ -58,7 +58,7 @@ __query_all = {
         """SELECT card_order FROM card
         WHERE card_order = (
         SELECT MAX (card_order) FROM card WHERE card_col_id = %(col_id)s
-        ) AND card_col_id = %(col_id)s AND card_archive = FALSE;""",
+        ) AND card_col_id = %(col_id)s AND card_archive = false;""",
     'card_insert_new_card':
         """INSERT INTO card (card_board_id, card_col_id, card_order, card_title) 
         VALUES (%s, %s, %s, %s);""",
@@ -68,6 +68,21 @@ __query_all = {
         """UPDATE col SET col_title = %s WHERE col_id = %s""",
     'card_update_card_title':
         """UPDATE card SET card_title = %s WHERE card_id = %s""",
+    'board_delete_by_id_board':
+        """DELETE FROM board WHERE board_id = %s""",
+    'col_delete_by_col_id':
+        """DELETE FROM col WHERE col_id = %s RETURNING col_board_id""",
+    'card_delete_by_card_id':
+        """DELETE FROM card WHERE card_id = %s RETURNING card_col_id""",
+    'card_select_by_card_col_id':
+    """SELECT card_id, card_order FROM card WHERE card_col_id = %s AND card_archive = false 
+    ORDER BY card_order""",
+    'card_update_card_order_by_card_id':
+    """UPDATE card SET card_order = %s WHERE card_id = %s""",
+    'card_update_card_archive':
+    """UPDATE card SET card_order = 0, card_archive = true WHERE card_id = %s AND card_archive = false""",
+    'card_update_card_unarchive':
+    """UPDATE card SET card_order = %s, card_archive = false WHERE card_id = %s AND card_archive = true""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id
