@@ -101,6 +101,13 @@ export let dataHandler = {
             console.log(response);
         });
     },
+    removeCard: function (cardData) {
+        this._api_post(`/add-column`, newColumnData, (response) => {
+            // this._data[`allData`] = response;
+            callback(response);
+            console.log(response);
+        });
+    },
     _createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
     },
