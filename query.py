@@ -71,9 +71,9 @@ __query_all = {
     'board_delete_by_id_board':
         """DELETE FROM board WHERE board_id = %s""",
     'col_delete_by_col_id':
-        """DELETE FROM col WHERE col_id = %s RETURNING col_board_id""",
+        """DELETE FROM col WHERE col_id = %s;""",
     'card_delete_by_card_id':
-        """DELETE FROM card WHERE card_id = %s RETURNING card_col_id""",
+        """DELETE FROM card WHERE card_id = %s;""",
     'card_select_by_card_col_id':
     """SELECT card_id, card_order FROM card WHERE card_col_id = %s AND card_archive = false 
     ORDER BY card_order""",

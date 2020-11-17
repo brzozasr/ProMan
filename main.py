@@ -276,17 +276,18 @@ def delete_column():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = None  # TODO write function get data after sign in
         col_id = None  # TODO
+        col_board_id = None  # TODO
     else:
         data = request.get_json()
         col_id = data['col_id']
+        col_board_id = data['col_board_id']
 
-    result = db.execute_sql(query.col_delete_by_col_id, [col_id])
-    board_id = result[0][0]
+    db.execute_sql(query.col_delete_by_col_id, [col_board_id])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         json_board = None  # TODO
     else:
-        json_board = get_public_board(board_id)
+        json_board = get_public_board(col_board_id)
 
     response = app.response_class(
         response=json_board,
@@ -302,12 +303,13 @@ def delete_card():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = None  # TODO write function get data after sign in
         card_id = None  # TODO
+        card_col_id = None  # TODO
     else:
         data = request.get_json()
         card_id = data['card_id']
+        card_col_id = data['card_col_id']
 
-    result = db.execute_sql(query.card_delete_by_card_id, [card_id])
-    card_col_id = result[0][0]
+    db.execute_sql(query.card_delete_by_card_id, [card_id])
 
     cards_order = db.execute_sql(query.card_select_by_card_col_id, [card_col_id])  # card_col_id
     cards_list = set_card_order(cards_order)
