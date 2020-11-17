@@ -397,12 +397,16 @@ def unarchive_card():
     return response
 
 
-@app.route('/change-card-position/<int:board_id>', methods=['POST'])
-def change_card_position(board_id):
+@app.route('/change-card-position', methods=['POST'])
+def change_card_position():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO
+        board_id = None  # TODO
         cards = None  # TODO write function get data after sign in
     else:
-        cards = compare_dict(get_public_board_dict(board_id), request.get_json())
+        data = request.get_json()
+        board_id = data['board_id']
+        cards = compare_dict(get_public_board_dict(board_id), data)
 
     result = db.execute_multi_sql(query.card_update_card_position, cards)
 
