@@ -282,7 +282,7 @@ def delete_column():
         col_id = data['col_id']
         col_board_id = data['col_board_id']
 
-    db.execute_sql(query.col_delete_by_col_id, [col_board_id])
+    db.execute_sql(query.col_delete_by_col_id, [col_id])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         json_board = None  # TODO
