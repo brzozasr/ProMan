@@ -74,8 +74,14 @@ export let dom = {
         // console.dir(boardId);
         for (let column of columns) {
 
+            let columnData = {
+                colId: column.col_id,
+                colBoard_id: column.col_board_id,
+                colTitle: column.col_title
+            };
+
             let columnHTML = `
-                <div id="column-${column.col_id}" class="board-column">
+                <div id="column-${column.col_id}" data-column-data=${JSON.stringify(columnData)} class="board-column">
                     <div class="board-column-title-container">
                         <span class="board-column-title">${column.col_title}</span>
                         <input class="board-column-title-input" type="text" value="${column.col_title}" />
@@ -214,8 +220,14 @@ export let dom = {
     addNewColumn: function (data) {
         let {col_title, col_board_id, col_id, cards} = data.columns.reverse()[0];
 
+        let columnData = {
+            colId: col_id,
+            colBoard_id: col_board_id,
+            colTitle: col_title
+        };
+
         let columnHTML = `
-            <div id="column-${col_id}" class="board-column">
+            <div id="column-${col_id}" data-column-data=${JSON.stringify(columnData)} class="board-column">
                 <div class="board-column-title-container">
                     <span class="board-column-title">${col_title}</span>
                     <input class="board-column-title-input" type="text" value="${col_title}" />
@@ -281,7 +293,8 @@ export let dom = {
         dragAndDrop.correctCardOrder(cardDataSet.columnId);
 
         let cardData = {
-            card_id: cardId
+            card_id: cardId,
+            card_col_id: cardDataSet.columnId
         };
 
         dataHandler.removeCard(cardData);
@@ -294,12 +307,14 @@ export let dom = {
         }
     },
     removeColumn: function (e) {
+        let columnDataSet = JSON.parse(e.currentTarget.parentElement.parentElement.dataset.columnData);
         let columnId = e.currentTarget.parentElement.parentElement.id.split('-').reverse()[0];
         let column = document.getElementById(`column-${columnId}`);
         column.remove();
 
         let columnData = {
-            col_id: columnId
+            col_id: columnId,
+            col_board_id: columnDataSet.colBoard_id
         };
 
         dataHandler.removeColumn(columnData);

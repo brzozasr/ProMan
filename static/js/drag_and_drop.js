@@ -30,10 +30,15 @@ export let dragAndDrop = {
                     let nextElement = currentElement.nextElementSibling;
 
                     if (dragAndDrop.cache.cardOrder < currentCardData.cardOrder) {
-                        // console.log('ok');
+                        console.log('Insert above');
+                        console.log(dragAndDrop.cache);
+                        console.log(currentCardData);
                         previousElement.insertAdjacentElement('beforebegin', currentElement);
 
-                    } else {
+                    } else if (dragAndDrop.cache.cardOrder > currentCardData.cardOrder) {
+                        console.log('Insert below');
+                        console.log(dragAndDrop.cache);
+                        console.log(currentCardData);
                         nextElement.insertAdjacentElement('afterend', currentElement);
                     }
 
