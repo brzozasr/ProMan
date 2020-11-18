@@ -24,6 +24,8 @@ export let dragAndDrop = {
     },
 
     onDragOverHandler: function (e) {
+        e.preventDefault();
+        console.log('dragover');
 
 
         // let currentCardData = JSON.parse(e.target.dataset.cardData);
@@ -60,28 +62,63 @@ export let dragAndDrop = {
         // }
     },
     onDropHandler: function (e) {
-        console.log('drop');
         e.preventDefault();
-        let draggedCard = document.getElementById(`card-${dragAndDrop.cache.card_id}`);
-        let currentElement = document.getElementById(this.id);
-        currentElement.insertAdjacentElement('afterend', draggedCard);
-        dragAndDrop.correctCardOrder(dragAndDrop.cache.column_id);
+        console.log('drop');
+        let targetCardId = e.target.id.split('-').reverse()[0];
+        let targetCardDataSet = JSON.parse(e.target.dataset.cardData);
+        let sourceCardId = dragAndDrop.cache.card_id;
+
+        let sourceCard = document.getElementById(`card-${sourceCardId}`);
+        let targetCard = document.getElementById(`card-${targetCardId}`);
+        
+        if (dragAndDrop.cache.column_id === targetCardDataSet.column_id) {
+            if (dragAndDrop.cache.card_order < targetCardDataSet.card_order) {
+                targetCard.insertAdjacentElement('afterend', sourceCard);
+            } else {
+                targetCard.insertAdjacentElement('beforebegin', sourceCard);
+            }
+
+            dragAndDrop.correctCardOrder(targetCardDataSet.column_id);
+        } else {
+            targetCard.insertAdjacentElement('afterend', sourceCard);
+
+            dragAndDrop.correctCardOrder(targetCardDataSet.column_id);
+            dragAndDrop.correctCardOrder(dragAndDrop.cache.column_id);
+        }
+
+
+        // if (dragAndDrop.cache.board_id === targetCardId) {
+        //     targetCard.insertAdjacentElement('afterend', sourceCard);
+        // } else {
+        //     targetCard.insertAdjacentElement('afterend', sourceCard);
+        //
+        // }
+
+        // e.preventDefault();
+        // let draggedCard = document.getElementById(`card-${dragAndDrop.cache.card_id}`);
+        // let currentElement = document.getElementById(this.id);
+        // currentElement.insertAdjacentElement('afterend', draggedCard);
+        // dragAndDrop.correctCardOrder(dragAndDrop.cache.column_id);
+
     },
     onDragEndHandler: function () {
-        let cardDataSet = JSON.parse(e.target.dataset.cardData);
-        dragAndDrop.updateBoardJson(cardDataSet.board_id);
+        // let cardDataSet = JSON.parse(e.target.dataset.cardData);
+        // dragAndDrop.updateBoardJson(cardDataSet.board_id);
     },
     updateColumnId: function () {
 
     },
     correctCardOrder: function (columnId) {
         let column = document.getElementById(`board-column-content-${columnId}`);
+        // console.log(column);
         let cardOrder = 1;
         for (let card of column.children) {
             if (card.className === 'card') {
                 // console.log(card);
                 let data = JSON.parse(card.dataset.cardData);
-                data.cardOrder = cardOrder;
+                data.card_order = cardOrder;
+                data.column_id = columnId;
+
                 card.dataset.cardData = JSON.stringify(data);
             }
             cardOrder++;
