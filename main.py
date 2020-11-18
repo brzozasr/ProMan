@@ -408,6 +408,8 @@ def change_card_position():
         board_id = data['board_id']
         cards = compare_dict(get_public_board_dict(board_id), data)
 
+        print(cards)
+
     result = db.execute_multi_sql(query.card_update_card_position, cards)
 
     if result is None:

@@ -14,3 +14,9 @@ SESSION_SECRET_KEY = urandom(64)
 SESSION_USER_ID = 'user_id'
 SESSION_USER_LOGIN = 'user_login'
 
+"""Local DB"""
+# PG_DB = 'pro_man'
+# PG_USERNAME = 'postgres'
+# PG_PASSWORD = 'brzozasr'
+# PG_HOST = 'localhost'
+# PG_PORT = '5432'
