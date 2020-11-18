@@ -45,5 +45,23 @@ export let sockets = {
                 dom.removeCard(null, cardFromSocket);
             }
         });
+
+        socket.on('removeColumn', function(data) {
+            console.log(data);
+
+            let columnFromSocket = document.getElementById(`column-${data.data.col_id}`);
+            if (columnFromSocket !== null) {
+                dom.removeColumn(null, columnFromSocket);
+            }
+        });
+
+        socket.on('removeBoard', function(data) {
+            console.log(data);
+
+            let boardFromSocket = document.getElementById(`board-${data.data.board_id}`);
+            if (boardFromSocket !== null) {
+                dom.removeBoard(null, boardFromSocket);
+            }
+        });
     }
 }

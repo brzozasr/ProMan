@@ -311,21 +311,26 @@ export let dom = {
             trashIcon.addEventListener('click', dom.removeCard);
         }
     },
-    removeColumn: function (e) {
-        // console.log(e.currentTarget.parentElement.parentElement.dataset.columnData);
-        let columnDataSet = JSON.parse(e.currentTarget.parentElement.parentElement.dataset.columnData);
-        let columnId = e.currentTarget.parentElement.parentElement.id.split('-').reverse()[0];
-        let column = document.getElementById(`column-${columnId}`);
-        column.remove();
+    removeColumn: function (e, columnFromSocket) {
+        if (e !== null) {
+            // console.log(e.currentTarget.parentElement.parentElement.dataset.columnData);
+            let columnDataSet = JSON.parse(e.currentTarget.parentElement.parentElement.dataset.columnData);
+            let columnId = e.currentTarget.parentElement.parentElement.id.split('-').reverse()[0];
+            let column = document.getElementById(`column-${columnId}`);
+            column.remove();
 
-        let columnData = {
-            col_id: columnId,
-            col_board_id: columnDataSet.col_board_id
-        };
+            let columnData = {
+                col_id: columnId,
+                col_board_id: columnDataSet.col_board_id
+            };
 
-        console.log(columnData);
+            console.log(columnData);
 
-        dataHandler.removeColumn(columnData);
+            dataHandler.removeColumn(columnData);
+        } else {
+            columnFromSocket.remove();
+        }
+
     },
     removeColumnAddEventListener: function () {
         let trashIcons = document.querySelectorAll('.column-remove');
@@ -334,16 +339,21 @@ export let dom = {
             trashIcon.addEventListener('click', dom.removeColumn);
         }
     },
-    removeBoard: function (e) {
-        let boardId = e.currentTarget.previousElementSibling.id.split('-').reverse()[0];
-        let board = document.getElementById(`board-${boardId}`);
-        board.remove();
+    removeBoard: function (e, boardFromSocket) {
+        if (e !== null ) {
+            let boardId = e.currentTarget.previousElementSibling.id.split('-').reverse()[0];
+            let board = document.getElementById(`board-${boardId}`);
+            board.remove();
 
-        let boardData = {
-            board_id: boardId
-        };
+            let boardData = {
+                board_id: boardId
+            };
 
-        dataHandler.removeBoard(boardData);
+            dataHandler.removeBoard(boardData);
+        } else {
+            boardFromSocket.remove();
+        }
+
     },
     removeBoardAddEventListener: function () {
         let trashIcons = document.querySelectorAll('.board-remove');

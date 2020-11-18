@@ -276,6 +276,8 @@ def delete_board():
         mimetype='application/json'
     )
 
+    socketio.emit('removeBoard', {'data': data}, broadcast=True)
+
     return response
 
 
@@ -302,6 +304,8 @@ def delete_column():
         status=200,
         mimetype='application/json'
     )
+
+    socketio.emit('removeColumn', {'data': data}, broadcast=True)
 
     return response
 
