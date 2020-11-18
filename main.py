@@ -152,7 +152,7 @@ def card_change_title():
     card_id = data['card_id']
     card_title = data['card_title']
 
-    result = db.execute_sql(query.col_update_col_title, [card_title, card_id])
+    result = db.execute_sql(query.card_update_card_title, [card_title, card_id])
 
     if result is None:
         result_dict = {'result': 'Success'}
