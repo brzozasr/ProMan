@@ -209,31 +209,35 @@ export let dom = {
         column.insertAdjacentElement('beforeend', addCardButton);
     },
     addNewColumn: function (data) {
+
         let {col_title, col_board_id, col_id, cards} = data.columns.reverse()[0];
 
-        let columnData = {
-            col_id: col_id,
-            col_board_id: col_board_id
-        };
+        let column = document.getElementById(`column-${col_id}`);
+        if (column === null) {
+            let columnData = {
+                col_id: col_id,
+                col_board_id: col_board_id
+            };
 
-        let columnHTML = `
-            <div id="column-${col_id}" class="board-column" data-column-data=${JSON.stringify(columnData)}>
-                <div class="board-column-title-container">
-                    <span class="board-column-title">${col_title}</span>
-                    <input class="board-column-title-input" type="text" value="${col_title}" />
-                    <div class="column-remove"><i class="fas fa-trash-alt"></i></div>
+            let columnHTML = `
+                <div id="column-${col_id}" class="board-column" data-column-data=${JSON.stringify(columnData)}>
+                    <div class="board-column-title-container">
+                        <span class="board-column-title">${col_title}</span>
+                        <input class="board-column-title-input" type="text" value="${col_title}" />
+                        <div class="column-remove"><i class="fas fa-trash-alt"></i></div>
+                    </div>
+                    <div id="board-column-content-${col_id}" class="board-column-content">
+                    </div>
                 </div>
-                <div id="board-column-content-${col_id}" class="board-column-content">
-                </div>
-            </div>
-        `;
+            `;
 
-        let board = document.querySelector(`#board-${col_board_id} .board-columns`);
-        // console.log(`nodeName: ${board.nodeName}`);
-        board.insertAdjacentHTML('beforeend', columnHTML);
+            let board = document.querySelector(`#board-${col_board_id} .board-columns`);
+            // console.log(`nodeName: ${board.nodeName}`);
+            board.insertAdjacentHTML('beforeend', columnHTML);
 
-        this.showCards(cards, col_id);
-        this.newCardAddButton(col_id, col_board_id);
+            this.showCards(cards, col_id);
+            this.newCardAddButton(col_id, col_board_id);
+        }
     },
     loadNewBoard: function (boardTitle) {
         dataHandler.createNewBoard(boardTitle, function (board) {
@@ -454,7 +458,7 @@ export let dom = {
                         } ;
 
                         dataHandler.createNewColumn(data, function (data) {
-                            console.log(data);
+                            // console.log(data);
                             dom.addNewColumn(data);
 
                             dom.updateEventListeners();

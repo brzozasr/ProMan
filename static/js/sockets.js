@@ -77,5 +77,13 @@ export let sockets = {
                 dom.updateEventListeners();
             }
         });
+
+        socket.on('addColumn', function(data) {
+            let dataParsed = JSON.parse(data.data);
+            console.log(dataParsed);
+
+            dom.addNewColumn(dataParsed);
+            dom.updateEventListeners();
+        });
     }
 }

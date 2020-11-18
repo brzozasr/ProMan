@@ -253,6 +253,8 @@ def add_column():
         mimetype='application/json'
     )
 
+    socketio.emit('addColumn', {'data': json_board}, broadcast=True)
+
     return response
 
 
