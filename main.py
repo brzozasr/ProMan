@@ -189,6 +189,8 @@ def add_board():
         mimetype='application/json'
     )
 
+    socketio.emit('addBoard', {'data': json_board}, broadcast=True)
+
     return response
 
 

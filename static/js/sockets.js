@@ -63,5 +63,19 @@ export let sockets = {
                 dom.removeBoard(null, boardFromSocket);
             }
         });
+
+        socket.on('addBoard', function(data) {
+            let dataParsed = JSON.parse(data.data);
+
+            let board = document.getElementById(`board-${dataParsed.board_id}`);
+            if (board === null) {
+                dom.addNewBoard(dataParsed);
+                let addNewBoardButton = document.getElementById('new-board-add-button');
+                let boardsContainer = document.querySelector('.board-container');
+                boardsContainer.insertAdjacentElement("beforeend", addNewBoardButton);
+
+                dom.updateEventListeners();
+            }
+        });
     }
 }

@@ -53,18 +53,8 @@ export let dom = {
             this.showColumns(boards.result[key].columns, boards.result[key].board_id);
         }
 
-        this.chevronsAddListener();
-        
-        this.changeElementTitleAddEventListeners('board-title', 'board-title-input');
-        this.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
-        this.changeElementTitleAddEventListeners('card-title', 'card-title-input');
         this.newBoardAddButton();
-        this.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
-        this.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
-        this.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
-        this.removeCardAddEventListener();
-        this.removeColumnAddEventListener();
-        this.removeBoardAddEventListener();
+        dom.updateEventListeners();
 
         document.addEventListener('keydown', e => {
             this.keyMapping(e);
@@ -423,16 +413,7 @@ export let dom = {
 
                             activeElement.parentElement.previousElementSibling.style.display = 'inline-block';
 
-                            dom.chevronsAddListener();
-                            dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
-                            dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
-                            dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
-                            dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
-                            dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
-                            dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
-                            dom.removeCardAddEventListener();
-                            dom.removeColumnAddEventListener();
-                            dom.removeBoardAddEventListener();
+                            dom.updateEventListeners();
 
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
@@ -454,16 +435,7 @@ export let dom = {
                             console.log(data);
                             dom.addNewCard(data);
 
-                            dom.chevronsAddListener();
-                            dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
-                            dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
-                            dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
-                            dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
-                            dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
-                            dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
-                            dom.removeCardAddEventListener();
-                            dom.removeColumnAddEventListener();
-                            dom.removeBoardAddEventListener();
+                            dom.updateEventListeners();
                         });
 
 
@@ -485,16 +457,7 @@ export let dom = {
                             console.log(data);
                             dom.addNewColumn(data);
 
-                            dom.chevronsAddListener();
-                            dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
-                            dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
-                            dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
-                            dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
-                            dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
-                            dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
-                            dom.removeCardAddEventListener();
-                            dom.removeColumnAddEventListener();
-                            dom.removeBoardAddEventListener();
+                            dom.updateEventListeners();
 
                             activeElement.value = '';
                             activeElement.parentElement.style.display = 'none';
@@ -561,6 +524,18 @@ export let dom = {
                 e.currentTarget.value = e.currentTarget.previousElementSibling.innerText;
             }
         }
+    },
+    updateEventListeners: function () {
+        dom.chevronsAddListener();
+        dom.changeElementTitleAddEventListeners('board-title', 'board-title-input');
+        dom.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
+        dom.changeElementTitleAddEventListeners('card-title', 'card-title-input');
+        dom.changeElementTitleAddEventListeners('new-board-add-button', 'new-board-add-button-input');
+        dom.changeElementTitleAddEventListeners('new-card-add-button', 'new-card-add-button-input');
+        dom.changeElementTitleAddEventListeners('new-column-add-button', 'new-column-add-button-input');
+        dom.removeCardAddEventListener();
+        dom.removeColumnAddEventListener();
+        dom.removeBoardAddEventListener();
     },
     chevronsAddListener: boardHiding.chevronsAddListener
 };
