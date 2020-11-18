@@ -122,6 +122,20 @@ export let dataHandler = {
             console.log(response);
         });
     },
+    loginUser: function (userData, callback) {
+        this._api_post(`/user-login`, userData, (response) => {
+            // this._data[`allData`] = response;
+            callback(response);
+            console.log(response);
+        });
+    },
+    registerUser: function (userData, callback) {
+        this._api_post(`/user-register`, userData, (response) => {
+            // this._data[`allData`] = response;
+            callback(response);
+            console.log(response);
+        });
+    },
     _createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
     },

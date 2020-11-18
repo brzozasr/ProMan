@@ -1,14 +1,21 @@
+import bcrypt
 from flask import Flask, render_template, url_for, session, request, jsonify
-from util import json_response
-from json_data import *
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 
 import data_handler
+from json_data import *
+from util import json_response
 from utils import *
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.secret_key = SESSION_SECRET_KEY
 socketio = SocketIO(app)
+
+
+@app.context_processor
+def inject_global():
+    return dict(user_id=SESSION_USER_ID, user_login=SESSION_USER_LOGIN)
 
 
 @app.route("/")
@@ -148,7 +155,7 @@ def card_change_title():
     card_id = data['card_id']
     card_title = data['card_title']
 
-    result = db.execute_sql(query.col_update_col_title, [card_title, card_id])
+    result = db.execute_sql(query.card_update_card_title, [card_title, card_id])
 
     if result is None:
         result_dict = {'result': 'Success'}
@@ -418,6 +425,76 @@ def change_card_position():
         return {'result': 'Success'}
     else:
         return {'result': result}
+
+
+@app.route('/user-login', methods=['POST'])
+def user_login():
+    data = request.get_json()
+    users_login = data['users_login']
+    users_pass = data['users_pass']
+
+    log_data = db.execute_sql(query.users_select_by_users_login, [users_login])
+
+    if log_data and type(log_data) == list and len(log_data) == 1:
+        user_data = {}
+        dict_key = [SESSION_USER_ID, SESSION_USER_LOGIN, 'users_pass']
+        i = 0
+        for data in log_data[0]:
+            user_data[dict_key[i]] = data
+            i += 1
+        if users_login == user_data[SESSION_USER_LOGIN] and \
+                bcrypt.checkpw(users_pass.encode('utf-8'), user_data['users_pass'].encode('utf-8')):
+            session[SESSION_USER_ID] = user_data[SESSION_USER_ID]
+            session[SESSION_USER_LOGIN] = user_data[SESSION_USER_LOGIN]
+            result = jsonify({
+                'login': 'Success',
+                'error': None,
+                'users_login': users_login
+            })
+        else:
+            result = jsonify({
+                'login': 'Failure',
+                'error': 'Invalid email address or password!',
+                'users_login': None
+            })
+    else:
+        if type(log_data) == list:
+            result = jsonify({
+                'login': 'Failure',
+                'error': 'Invalid email address or password!',
+                'users_login': None
+            })
+        else:
+            result = jsonify({
+                'login': 'Failure',
+                'error': str(log_data),
+                'users_login': None
+            })
+
+    return result
+
+
+@app.route('/user-register', methods=['POST'])
+def user_register():
+    data = request.get_json()
+    users_login = data['users_login']
+    users_pass = data['users_pass']
+
+    pass_hash = bcrypt.hashpw(users_pass.encode('utf-8'), bcrypt.gensalt())
+    error = db.execute_sql(query.users_insert_new_user, [users_login, pass_hash.decode('utf-8')])
+
+    if error:
+        result = jsonify({
+            'register': 'Failure',
+            'error': str(error)
+        })
+    else:
+        result = jsonify({
+            'register': 'Success',
+            'error': None
+        })
+
+    return result
 
 
 @app.route("/get-status/<int:status_id>")

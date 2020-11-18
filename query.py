@@ -75,14 +75,18 @@ __query_all = {
     'card_delete_by_card_id':
         """DELETE FROM card WHERE card_id = %s;""",
     'card_select_by_card_col_id':
-    """SELECT card_id, card_order FROM card WHERE card_col_id = %s AND card_archive = false 
+        """SELECT card_id, card_order FROM card WHERE card_col_id = %s AND card_archive = false 
     ORDER BY card_order""",
     'card_update_card_order_by_card_id':
-    """UPDATE card SET card_order = %s WHERE card_id = %s""",
+        """UPDATE card SET card_order = %s WHERE card_id = %s""",
     'card_update_card_archive':
-    """UPDATE card SET card_order = 0, card_archive = true WHERE card_id = %s AND card_archive = false""",
+        """UPDATE card SET card_order = 0, card_archive = true WHERE card_id = %s AND card_archive = false;""",
     'card_update_card_unarchive':
-    """UPDATE card SET card_order = %s, card_archive = false WHERE card_id = %s AND card_archive = true""",
+        """UPDATE card SET card_order = %s, card_archive = false WHERE card_id = %s AND card_archive = true;""",
+    'users_select_by_users_login':
+        """SELECT users_id, users_login, users_pass FROM users WHERE users_login = %s;""",
+    'users_insert_new_user':
+        """INSERT INTO users (users_login, users_pass) VALUES (%s, %s);""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id

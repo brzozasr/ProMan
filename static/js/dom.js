@@ -2,6 +2,7 @@
 import { dataHandler } from "./data_handler.js";
 import { boardHiding } from "./boards.js";
 import { dragAndDrop } from "./drag_and_drop.js";
+import { popupLoginHiding } from "./popup.js";
 
 export let dom = {
     init: function () {
@@ -62,6 +63,7 @@ export let dom = {
         }
 
         this.chevronsAddListener();
+        popupLoginHiding.popupAddListeners();
         
         this.changeElementTitleAddEventListeners('board-title', 'board-title-input');
         this.changeElementTitleAddEventListeners('board-column-title', 'board-column-title-input');
