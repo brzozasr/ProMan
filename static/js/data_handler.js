@@ -77,6 +77,19 @@ export let dataHandler = {
             // callback(response);
         });
     },
+    updateColumnName: function (columnName) {
+        this._api_post(`/column-change-title`, columnName, (response) => {
+            // this._data[`allData`] = response;
+            // callback(response);
+        });
+    },
+    updateCardName: function (cardName) {
+        this._api_post(`/card-change-title`, cardName, (response) => {
+            // this._data[`allData`] = response;
+            // callback(response);
+            console.log(response);
+        });
+    },
     getCard: function (cardId, callback) {
         // the card is retrieved and then the callback function is called with the card
     },

@@ -123,6 +123,8 @@ def board_change_title():
     else:
         result_dict = {'result': result}
 
+    socketio.emit('boardNameChange', {'data': data}, broadcast=True)
+
     return jsonify(result_dict)
 
 
@@ -139,6 +141,8 @@ def column_change_title():
     else:
         result_dict = {'result': result}
 
+    socketio.emit('columnNameChange', {'data': data}, broadcast=True)
+
     return jsonify(result_dict)
 
 
@@ -154,6 +158,8 @@ def card_change_title():
         result_dict = {'result': 'Success'}
     else:
         result_dict = {'result': result}
+
+    socketio.emit('cardNameChange', {'data': data}, broadcast=True)
 
     return jsonify(result_dict)
 
@@ -329,6 +335,8 @@ def delete_card():
         status=200,
         mimetype='application/json'
     )
+
+    socketio.emit('removeCard', {'data': data}, broadcast=True)
 
     return response
 

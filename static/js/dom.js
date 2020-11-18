@@ -2,21 +2,13 @@
 import { dataHandler } from "./data_handler.js";
 import { boardHiding } from "./boards.js";
 import { dragAndDrop } from "./drag_and_drop.js";
+import { sockets } from "./sockets.js";
 
 export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
-        // let socketIO = document.createElement('script');
 
-        // let socket = io();
-        // socket.on('connect', function() {
-        //     console.log('connected');
-        //     socket.emit('my event', {data: 'I\'m connected!'});
-        // });
-        //
-        // socket.on('boardNameChange', function(data) {
-        //     console.log(data);
-        // });
+        sockets.init();
     },
     loadAllData: function () {
         dataHandler.getAllData(function(boards) {
@@ -85,8 +77,8 @@ export let dom = {
         for (let column of columns) {
 
             let columnData = {
-                colId: column.col_id,
-                colBoard_id: column.col_board_id
+                col_id: column.col_id,
+                col_board_id: column.col_board_id
             };
 
             let columnHTML = `
@@ -230,8 +222,8 @@ export let dom = {
         let {col_title, col_board_id, col_id, cards} = data.columns.reverse()[0];
 
         let columnData = {
-            colId: col_id,
-            colBoard_id: col_board_id
+            col_id: col_id,
+            col_board_id: col_board_id
         };
 
         let columnHTML = `
@@ -292,20 +284,25 @@ export let dom = {
 
         this.showColumns(board.columns, board.board_id);
     },
-    removeCard: function (e) {
-        let cardId = e.currentTarget.parentElement.id.split('-').reverse()[0];
-        let card = document.getElementById(`card-${cardId}`);
-        card.remove();
+    removeCard: function (e, cardFromSocket) {
+        if (e !== null) {
+            let cardId = e.currentTarget.parentElement.id.split('-').reverse()[0];
+            let card = document.getElementById(`card-${cardId}`);
 
-        let cardDataSet = JSON.parse(card.dataset.cardData);
-        dragAndDrop.correctCardOrder(cardDataSet.column_id);
+            card.remove();
 
-        let cardData = {
-            card_id: cardId,
-            card_col_id: cardDataSet.column_id
-        };
+            let cardDataSet = JSON.parse(card.dataset.cardData);
+            dragAndDrop.correctCardOrder(cardDataSet.column_id);
 
-        dataHandler.removeCard(cardData);
+            let cardData = {
+                card_id: cardId,
+                card_col_id: cardDataSet.column_id
+            };
+
+            dataHandler.removeCard(cardData);
+        } else {
+            cardFromSocket.remove();
+        }
     },
     removeCardAddEventListener: function () {
         let trashIcons = document.querySelectorAll('.card-remove');
@@ -323,7 +320,7 @@ export let dom = {
 
         let columnData = {
             col_id: columnId,
-            col_board_id: columnDataSet.colBoard_id
+            col_board_id: columnDataSet.col_board_id
         };
 
         console.log(columnData);
@@ -377,7 +374,24 @@ export let dom = {
                         };
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.updateBoardName(data);
+                    } else if (activeElement.className === 'board-column-title-input') {
+                        let columnDataSet = JSON.parse(activeElement.parentElement.parentElement.dataset.columnData);
+                        let data = {
+                            col_board_id: columnDataSet.col_id,
+                            col_title: activeElement.value
+                        };
+                        // console.log(`data: ${JSON.stringify(data)}`);
+                        dataHandler.updateColumnName(data);
+                    } else if (activeElement.className === 'card-title-input') {
+                        let cardDataSet = JSON.parse(activeElement.parentElement.parentElement.dataset.cardData);
+                        let data = {
+                            card_id: cardDataSet.card_id,
+                            card_title: activeElement.value
+                        };
+                        // console.log(`data: ${JSON.stringify(data)}`);
+                        dataHandler.updateCardName(data);
                     }
+
 
                     activeElement.style.display = 'none';
                 }
