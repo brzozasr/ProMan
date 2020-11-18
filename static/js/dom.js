@@ -181,32 +181,35 @@ export let dom = {
     addNewCard: function (data) {
         let {card_id, card_order, card_title} = data.cards.reverse()[0];
 
-        let cardData = {
+        let card = document.getElementById(`card-${card_id}`);
+        if (card === null) {
+            let cardData = {
                 card_id: card_id,
                 card_order: card_order,
                 column_id: data.col_id,
                 board_id: data.col_board_id
             };
 
-        let cardHTML = `
-            <div class="card" id="card-${card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
-                <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
-                <div class="card-title-container">
-                    <span class="card-title">${card_title}</span>
-                    <input class="card-title-input" type="text" value="${card_title}" />
+            let cardHTML = `
+                <div class="card" id="card-${card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
+                    <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                    <div class="card-title-container">
+                        <span class="card-title">${card_title}</span>
+                        <input class="card-title-input" type="text" value="${card_title}" />
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
 
-        let column = document.querySelector(`#board-column-content-${data.col_id}`);
-        column.insertAdjacentHTML('beforeend', cardHTML);
+            let column = document.querySelector(`#board-column-content-${data.col_id}`);
+            column.insertAdjacentHTML('beforeend', cardHTML);
 
-        let addCardButton = document.getElementById(`new-card-add-button-container-${data.col_id}`);
-        addCardButton.lastElementChild.firstElementChild.value = '';
-        addCardButton.lastElementChild.style.display = 'none';
-        addCardButton.firstElementChild.style.display = 'inline-block';
+            let addCardButton = document.getElementById(`new-card-add-button-container-${data.col_id}`);
+            addCardButton.lastElementChild.firstElementChild.value = '';
+            addCardButton.lastElementChild.style.display = 'none';
+            addCardButton.firstElementChild.style.display = 'inline-block';
 
-        column.insertAdjacentElement('beforeend', addCardButton);
+            column.insertAdjacentElement('beforeend', addCardButton);
+        }
     },
     addNewColumn: function (data) {
 
@@ -247,36 +250,39 @@ export let dom = {
     addNewBoard: function (board) {
         let boards = document.querySelectorAll('section');
 
-        let newBoard = `
-            <section class="board" id="board-${board.board_id}">
-                <div class="board-header">
-                    <div class="board-title-container">
-                        <span class="board-title">${board.board_title}</span>
-                        <input class="board-title-input" type="text" value="${board.board_title}" />
-                    </div>
-                    <div class="board-buttons-container">
-                        <div class="new-column-add-button-container board-add" style="visibility: hidden;">
-                            <div class="new-column-add-button">
-                                <i class="fa fa-plus"></i>
-                                <span class="new-column-txt">Add new column</span>
-                            </div>
-                            <div class="new-column-add-button-input">
-                                <input type="text" class="new-column-txt-input" size="15" />
-                            </div>
+        let boardTest = document.getElementById(`board-${board.board_id}`);
+        if (boardTest === null) {
+            let newBoard = `
+                <section class="board" id="board-${board.board_id}">
+                    <div class="board-header">
+                        <div class="board-title-container">
+                            <span class="board-title">${board.board_title}</span>
+                            <input class="board-title-input" type="text" value="${board.board_title}" />
                         </div>
-                        
-                        
-                        <button id="chevron-${board.board_id}" class="board-toggle"><i class="fas fa-chevron-down"></i></button>
-                        <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
+                        <div class="board-buttons-container">
+                            <div class="new-column-add-button-container board-add" style="visibility: hidden;">
+                                <div class="new-column-add-button">
+                                    <i class="fa fa-plus"></i>
+                                    <span class="new-column-txt">Add new column</span>
+                                </div>
+                                <div class="new-column-add-button-input">
+                                    <input type="text" class="new-column-txt-input" size="15" />
+                                </div>
+                            </div>
+                            
+                            
+                            <button id="chevron-${board.board_id}" class="board-toggle"><i class="fas fa-chevron-down"></i></button>
+                            <div class="board-remove"><i class="fas fa-trash-alt"></i></div>
+                        </div>
                     </div>
-                </div>
-                <div id="board-columns-${board.board_id}" class="board-columns" style="display: none;"></div>
-            </section>
-        `;
+                    <div id="board-columns-${board.board_id}" class="board-columns" style="display: none;"></div>
+                </section>
+            `;
 
-        boards[boards.length - 1].insertAdjacentHTML('afterend', newBoard);
+            boards[boards.length - 1].insertAdjacentHTML('afterend', newBoard);
 
-        this.showColumns(board.columns, board.board_id);
+            this.showColumns(board.columns, board.board_id);
+        }
     },
     removeCard: function (e, cardFromSocket) {
         if (e !== null) {

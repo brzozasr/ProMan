@@ -226,6 +226,8 @@ def add_card():
         mimetype='application/json'
     )
 
+    socketio.emit('addCard', {'data': json_col}, broadcast=True)
+
     return response
 
 
