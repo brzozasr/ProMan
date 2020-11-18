@@ -6,7 +6,17 @@ import { dragAndDrop } from "./drag_and_drop.js";
 export let dom = {
     init: function () {
         // This function should run once, when the page is loaded.
+        // let socketIO = document.createElement('script');
 
+        // let socket = io();
+        // socket.on('connect', function() {
+        //     console.log('connected');
+        //     socket.emit('my event', {data: 'I\'m connected!'});
+        // });
+        //
+        // socket.on('boardNameChange', function(data) {
+        //     console.log(data);
+        // });
     },
     loadAllData: function () {
         dataHandler.getAllData(function(boards) {
@@ -68,7 +78,7 @@ export let dom = {
             this.keyMapping(e);
         });
 
-        dragAndDrop.init();
+        dragAndDrop.init(boards);
     },
     showColumns: function (columns, boardId) {
         // console.dir(boardId);
@@ -104,14 +114,14 @@ export let dom = {
         for (let card of cards) {
             // console.log(cards);
             let cardData = {
-                cardId: card.card_id,
-                cardOrder: card.card_order,
-                columnId: card.card_col_id,
-                boardId: card.card_board_id
+                card_id: card.card_id,
+                card_order: card.card_order,
+                column_id: card.card_col_id,
+                board_id: card.card_board_id
             };
             let cardHTML = `
                 
-                <div class="card" id="card-${cardData.cardId}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
+                <div class="card" id="card-${cardData.card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
                     <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card.card_title}</span>
@@ -190,10 +200,10 @@ export let dom = {
         let {card_id, card_order, card_title} = data.cards.reverse()[0];
 
         let cardData = {
-                cardId: card_id,
-                cardOrder: card_order,
-                columnId: data.col_id,
-                boardId: data.col_board_id
+                card_id: card_id,
+                card_order: card_order,
+                column_id: data.col_id,
+                board_id: data.col_board_id
             };
 
         let cardHTML = `
@@ -288,11 +298,11 @@ export let dom = {
         card.remove();
 
         let cardDataSet = JSON.parse(card.dataset.cardData);
-        dragAndDrop.correctCardOrder(cardDataSet.columnId);
+        dragAndDrop.correctCardOrder(cardDataSet.column_id);
 
         let cardData = {
             card_id: cardId,
-            card_col_id: cardDataSet.columnId
+            card_col_id: cardDataSet.column_id
         };
 
         dataHandler.removeCard(cardData);
