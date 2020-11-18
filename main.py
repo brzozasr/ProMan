@@ -1,12 +1,14 @@
 from flask import Flask, render_template, url_for, session, request, jsonify
 from util import json_response
 from json_data import *
+from flask_socketio import SocketIO, emit
 
 import data_handler
 from utils import *
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+socketio = SocketIO(app)
 
 
 @app.route("/")
@@ -438,8 +440,8 @@ def get_cards_for_board(board_id: int):
 
 
 def main():
-    app.run(debug=True)
-
+    # app.run(debug=True)
+    socketio.run(app)
     # Serving the favicon
     with app.app_context():
         app.add_url_rule('/favicon.ico', redirect_to=url_for('static', filename='favicon/favicon.ico'))
