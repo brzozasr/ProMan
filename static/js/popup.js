@@ -296,7 +296,17 @@ export let popupLoginHiding = {
     },
 
     logoutUser: function () {
-        popupLoginHiding.topBarBtnAppearance(false, '')
-        sessionStorage.clear();
+        let dataLogout = {
+            command: 'LOGOUT'
+        };
+        dataHandler.userLogout(dataLogout, function (dataLogout) {
+            if (dataLogout['logout'] === 'Success') {
+                popupLoginHiding.topBarBtnAppearance(false, '');
+                sessionStorage.clear();
+            } else {
+                popupLoginHiding.topBarBtnAppearance(true, sessionStorage.getItem('users_login'));
+            }
+        });
+
     },
 };

@@ -30,7 +30,7 @@ def index():
 def get_all_data():
     """All the boards, the columns and the cards as a JSON."""
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
+        data = get_all_public_private_data(str(session.get(SESSION_USER_ID)))
     else:
         data = get_all_public_data()
 
@@ -524,7 +524,21 @@ def user_register():
 
 @app.route('/user-logout', methods=['POST'])
 def user_logout():
-    pass
+    data = request.get_json()
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN) and data['command'] == 'LOGOUT':
+        session.pop(SESSION_USER_ID, None)
+        session.pop(SESSION_USER_LOGIN, None)
+        session.clear()
+
+        result = jsonify({
+            'logout': 'Success'
+        })
+    else:
+        result = jsonify({
+            'logout': 'Failure'
+        })
+
+    return result
 
 
 @app.route("/get-status/<int:status_id>")

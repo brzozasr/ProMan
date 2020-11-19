@@ -16,9 +16,13 @@ __query_all = {
         INNER JOIN board ON board.board_public = true AND board.board_id = col.col_board_id
         ORDER BY col.col_id;""",
     'col_select_public_private':
-        """SELECT col.col_id, col.col_board_id, col.col_title, col.col_registration FROM col 
-        INNER JOIN board ON board.board_public = true AND board.board_id = col.col_board_id
-        ORDER BY col.col_id;""",
+        """SELECT cpu.col_id, cpu.col_board_id, cpu.col_title, cpu.col_registration FROM col AS cpu 
+        INNER JOIN board AS bpu ON bpu.board_public = true AND bpu.board_id = cpu.col_board_id
+        UNION
+        SELECT cpr.col_id, cpr.col_board_id, cpr.col_title, cpr.col_registration FROM col AS cpr
+        INNER JOIN board AS bpr ON bpr.board_public = false AND bpr.board_id = cpr.col_board_id
+        INNER JOIN coworker AS cow ON cpr.col_board_id = cow.coworker_board_id AND cow.coworker_users_id = %s
+        ORDER BY col_board_id;""",
     'card_select_public':
         """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
         c.card_archive, c.card_registration
@@ -26,6 +30,19 @@ __query_all = {
         INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.card_board_id AND c.card_archive = false
         ORDER BY c.card_order;""",
+    'card_select_public_private':
+        """SELECT cpu.card_id, cpu.card_board_id, cpu.card_col_id, cpu.card_order, cpu.card_title, 
+        cpu.card_archive, cpu.card_registration FROM card AS cpu 
+        INNER JOIN board AS bpu 
+        ON bpu.board_public = true AND bpu.board_id = cpu.card_board_id AND cpu.card_archive = false
+        UNION
+        SELECT cpr.card_id, cpr.card_board_id, cpr.card_col_id, cpr.card_order, cpr.card_title, 
+        cpr.card_archive, cpr.card_registration FROM card AS cpr 
+        INNER JOIN board AS bpr 
+        ON bpr.board_public = false AND bpr.board_id = cpr.card_board_id AND cpr.card_archive = false
+        INNER JOIN coworker AS cow 
+        ON cpr.card_board_id = cow.coworker_board_id AND cow.coworker_users_id = %s
+        ORDER BY card_order;""",
     'board_select_public_by_board_id':
         """SELECT board_id, board_title, board_public, board_registration 
         FROM board WHERE board_id = %s AND board_public = true
