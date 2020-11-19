@@ -36,6 +36,15 @@ img#popup-close {
     background-color: #ff8080;
 }
 
+#popup-user-log {
+    display: none;
+    color: #000;
+    background-color: #fff;
+    border: 1px #000;
+    border-style: none solid solid solid;
+
+}
+
 div#popup-log {
     position: absolute;
     left: 50%;
