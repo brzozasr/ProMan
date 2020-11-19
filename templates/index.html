@@ -20,8 +20,15 @@
         <script type="module" src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     </head>
     <body>
+        <div id="top-bar-login">
+            <div>
+                <button id="popup-login">Login</button>
+                <button id="popup-register">Register</button>
+                <button id="popup-user-log" style="display: none"></button>
+                <button id="popup-logout" style="display: none">Logout</button>
+            </div>
+        </div>
         <h1><img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo ProMan"></h1>
         <div class="board-container"></div>
-
     </body>
 </html>

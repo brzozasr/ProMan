@@ -3,10 +3,26 @@ __query_all = {
     'board_select_public':
         """SELECT board_id, board_title, board_public, board_registration FROM board 
         WHERE board_public = true ORDER BY board_id;""",
+    'board_select_public_private':
+        """SELECT board.board_id, board.board_title, board.board_public, 
+        board.board_registration FROM board WHERE board.board_public = true
+        UNION
+        SELECT board.board_id, board.board_title, board.board_public, 
+        board.board_registration FROM board INNER JOIN coworker
+        ON board.board_id = coworker.coworker_board_id AND coworker.coworker_users_id = %s
+        ORDER BY board_id""",
     'col_select_public':
         """SELECT col.col_id, col.col_board_id, col.col_title, col.col_registration FROM col 
         INNER JOIN board ON board.board_public = true AND board.board_id = col.col_board_id
         ORDER BY col.col_id;""",
+    'col_select_public_private':
+        """SELECT cpu.col_id, cpu.col_board_id, cpu.col_title, cpu.col_registration FROM col AS cpu 
+        INNER JOIN board AS bpu ON bpu.board_public = true AND bpu.board_id = cpu.col_board_id
+        UNION
+        SELECT cpr.col_id, cpr.col_board_id, cpr.col_title, cpr.col_registration FROM col AS cpr
+        INNER JOIN board AS bpr ON bpr.board_public = false AND bpr.board_id = cpr.col_board_id
+        INNER JOIN coworker AS cow ON cpr.col_board_id = cow.coworker_board_id AND cow.coworker_users_id = %s
+        ORDER BY col_board_id;""",
     'card_select_public':
         """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
         c.card_archive, c.card_registration
@@ -14,6 +30,19 @@ __query_all = {
         INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.card_board_id AND c.card_archive = false
         ORDER BY c.card_order;""",
+    'card_select_public_private':
+        """SELECT cpu.card_id, cpu.card_board_id, cpu.card_col_id, cpu.card_order, cpu.card_title, 
+        cpu.card_archive, cpu.card_registration FROM card AS cpu 
+        INNER JOIN board AS bpu 
+        ON bpu.board_public = true AND bpu.board_id = cpu.card_board_id AND cpu.card_archive = false
+        UNION
+        SELECT cpr.card_id, cpr.card_board_id, cpr.card_col_id, cpr.card_order, cpr.card_title, 
+        cpr.card_archive, cpr.card_registration FROM card AS cpr 
+        INNER JOIN board AS bpr 
+        ON bpr.board_public = false AND bpr.board_id = cpr.card_board_id AND cpr.card_archive = false
+        INNER JOIN coworker AS cow 
+        ON cpr.card_board_id = cow.coworker_board_id AND cow.coworker_users_id = %s
+        ORDER BY card_order;""",
     'board_select_public_by_board_id':
         """SELECT board_id, board_title, board_public, board_registration 
         FROM board WHERE board_id = %s AND board_public = true
@@ -75,14 +104,18 @@ __query_all = {
     'card_delete_by_card_id':
         """DELETE FROM card WHERE card_id = %s;""",
     'card_select_by_card_col_id':
-    """SELECT card_id, card_order FROM card WHERE card_col_id = %s AND card_archive = false 
+        """SELECT card_id, card_order FROM card WHERE card_col_id = %s AND card_archive = false 
     ORDER BY card_order""",
     'card_update_card_order_by_card_id':
-    """UPDATE card SET card_order = %s WHERE card_id = %s""",
+        """UPDATE card SET card_order = %s WHERE card_id = %s""",
     'card_update_card_archive':
-    """UPDATE card SET card_order = 0, card_archive = true WHERE card_id = %s AND card_archive = false""",
+        """UPDATE card SET card_order = 0, card_archive = true WHERE card_id = %s AND card_archive = false;""",
     'card_update_card_unarchive':
-    """UPDATE card SET card_order = %s, card_archive = false WHERE card_id = %s AND card_archive = true""",
+        """UPDATE card SET card_order = %s, card_archive = false WHERE card_id = %s AND card_archive = true;""",
+    'users_select_by_users_login':
+        """SELECT users_id, users_login, users_pass FROM users WHERE users_login = %s;""",
+    'users_insert_new_user':
+        """INSERT INTO users (users_login, users_pass) VALUES (%s, %s);""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id

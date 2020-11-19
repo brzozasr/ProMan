@@ -1,14 +1,21 @@
+import bcrypt
 from flask import Flask, render_template, url_for, session, request, jsonify
-from util import json_response
-from json_data import *
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO
 
 import data_handler
+from json_data import *
+from util import json_response
 from utils import *
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.secret_key = SESSION_SECRET_KEY
 socketio = SocketIO(app)
+
+
+@app.context_processor
+def inject_global():
+    return dict(user_id=SESSION_USER_ID, user_login=SESSION_USER_LOGIN)
 
 
 @app.route("/")
@@ -23,7 +30,7 @@ def index():
 def get_all_data():
     """All the boards, the columns and the cards as a JSON."""
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
+        data = get_all_public_private_data(str(session.get(SESSION_USER_ID)))
     else:
         data = get_all_public_data()
 
@@ -417,12 +424,18 @@ def unarchive_card():
     return response
 
 
-@app.route('/change-card-position/<int:board_id>', methods=['POST'])
-def change_card_position(board_id):
+@app.route('/change-card-position', methods=['POST'])
+def change_card_position():
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = None  # TODO
+        board_id = None  # TODO
         cards = None  # TODO write function get data after sign in
     else:
-        cards = compare_dict(get_public_board_dict(board_id), request.get_json())
+        data = request.get_json()
+        board_id = data['board_id']
+        cards = compare_dict(get_public_board_dict(board_id), data)
+
+        print(cards)
 
     result = db.execute_multi_sql(query.card_update_card_position, cards)
 
@@ -430,6 +443,120 @@ def change_card_position(board_id):
         return {'result': 'Success'}
     else:
         return {'result': result}
+
+
+@app.route('/user-login', methods=['POST'])
+def user_login():
+    data = request.get_json()
+    users_login = data['users_login']
+    users_pass = data['users_pass']
+
+    log_data = db.execute_sql(query.users_select_by_users_login, [users_login])
+
+    if log_data and type(log_data) == list and len(log_data) == 1:
+        user_data = {}
+        dict_key = [SESSION_USER_ID, SESSION_USER_LOGIN, 'users_pass']
+        i = 0
+        for data in log_data[0]:
+            user_data[dict_key[i]] = data
+            i += 1
+        if users_login == user_data[SESSION_USER_LOGIN] and \
+                bcrypt.checkpw(users_pass.encode('utf-8'), user_data['users_pass'].encode('utf-8')):
+            session[SESSION_USER_ID] = user_data[SESSION_USER_ID]
+            session[SESSION_USER_LOGIN] = user_data[SESSION_USER_LOGIN]
+            result = jsonify({
+                'users_id': user_data[SESSION_USER_ID],
+                'users_login': user_data[SESSION_USER_LOGIN],
+                'login': 'Success',
+                'error': None
+            })
+        else:
+            result = jsonify({
+                'users_id': None,
+                'users_login': None,
+                'login': 'Failure',
+                'error': 'Invalid email address or password!'
+            })
+    else:
+        if type(log_data) == list:
+            result = jsonify({
+                'users_id': None,
+                'users_login': None,
+                'login': 'Failure',
+                'error': 'Invalid email address or password!'
+            })
+        else:
+            result = jsonify({
+                'users_id': None,
+                'users_login': None,
+                'login': 'Failure',
+                'error': str(log_data)
+            })
+
+    return result
+
+
+@app.route('/is-user-login', methods=['POST'])
+def is_user_login():
+    data = request.get_json()
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        if int(data['users_id']) == session.get(SESSION_USER_ID) and \
+                data['users_login'] == session.get(SESSION_USER_LOGIN):
+            result = jsonify({
+                'is_login': True
+            })
+        else:
+            result = jsonify({
+                'is_login': False
+            })
+    else:
+        result = jsonify({
+            'is_login': False
+        })
+
+    return result
+
+
+@app.route('/user-register', methods=['POST'])
+def user_register():
+    data = request.get_json()
+    users_login = data['users_login']
+    users_pass = data['users_pass']
+
+    pass_hash = bcrypt.hashpw(users_pass.encode('utf-8'), bcrypt.gensalt())
+    error = db.execute_sql(query.users_insert_new_user, [users_login, pass_hash.decode('utf-8')])
+
+    if error:
+        result = jsonify({
+            'register': 'Failure',
+            'error': str(error)
+        })
+    else:
+        result = jsonify({
+            'register': 'Success',
+            'error': None
+        })
+
+    return result
+
+
+@app.route('/user-logout', methods=['POST'])
+def user_logout():
+    data = request.get_json()
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN) and data['command'] == 'LOGOUT':
+        session.pop(SESSION_USER_ID, None)
+        session.pop(SESSION_USER_LOGIN, None)
+        session.clear()
+
+        result = jsonify({
+            'logout': 'Success'
+        })
+    else:
+        result = jsonify({
+            'logout': 'Failure'
+        })
+
+    return result
 
 
 @app.route("/get-status/<int:status_id>")

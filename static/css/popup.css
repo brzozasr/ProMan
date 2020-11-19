@@ -1,0 +1,122 @@
+@import "http://fonts.googleapis.com/css?family=Raleway";
+
+#top-bar-login {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#popup-main {
+    width: 100%;
+    height: 100%;
+    opacity: .95;
+    top: 0;
+    left: 0;
+    display: none;
+    position: fixed;
+    z-index: 150;
+    background-color: #313131;
+    overflow: auto;
+}
+
+img#popup-close {
+    position: absolute;
+    right: -14px;
+    top: -14px;
+    cursor: pointer;
+}
+
+#popup-error {
+    width: 238px;
+    display: none;
+    margin-top: 15px;
+    padding: 5px;
+    color: #fff;
+    border: 1px solid #ff0000;
+    background-color: #ff8080;
+}
+
+#popup-user-log {
+    display: none;
+    color: #000;
+    background-color: #fff;
+    border: 1px #000;
+    border-style: none solid solid solid;
+
+}
+
+div#popup-log {
+    position: absolute;
+    left: 50%;
+    top: 17%;
+    margin-left: -202px;
+    font-family: Raleway, sans-serif;
+}
+
+.popup-form {
+    max-width: 300px;
+    min-width: 250px;
+    padding: 10px 50px;
+    border: 2px solid gray;
+    border-radius: 10px;
+    font-family: Raleway, sans-serif;
+    background-color: #fff;
+}
+
+.popup-h2 {
+    background-color: #000000;
+    color: #fff;
+    padding: 20px 35px;
+    margin: -10px -50px;
+    text-align: center;
+    border-radius: 10px 10px 0 0;
+}
+
+.popup-hr {
+    margin: 10px -50px;
+    border: 0;
+    border-top: 1px solid #ccc;
+}
+
+#popup-email {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    font-family: Raleway, sans-serif;
+}
+
+.popup-pass {
+    width: 100%;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-size: 16px;
+    font-family: Raleway, sans-serif;
+}
+
+.popup-div-img {
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+}
+
+.popup-img{
+    width: 40px;
+    height: 38px;
+    border: 1px solid #ccc;
+}
+
+#popup-submit {
+    text-decoration: none;
+    width: 100%;
+    text-align: center;
+    display: block;
+    background-color: #262626;
+    color: #fff;
+    border: 1px solid #4d4d4d;
+    padding: 10px 0;
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 30px;
+}

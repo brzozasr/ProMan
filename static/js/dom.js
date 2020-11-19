@@ -3,6 +3,7 @@ import { dataHandler } from "./data_handler.js";
 import { boardHiding } from "./boards.js";
 import { dragAndDrop } from "./drag_and_drop.js";
 import { sockets } from "./sockets.js";
+import { popupLoginHiding } from "./popup.js";
 
 export let dom = {
     init: function () {
@@ -54,6 +55,7 @@ export let dom = {
         }
 
         this.newBoardAddButton();
+        popupLoginHiding.popupAddListeners();
         dom.updateEventListeners();
 
         document.addEventListener('keydown', e => {

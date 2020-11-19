@@ -9,14 +9,29 @@ def __get_public_boards():
     return db.execute_sql_dict(query.board_select_public)
 
 
+def __get_public_private_boards(user_id):
+    """Returns all public and private boards for the user from DB."""
+    return db.execute_sql_dict(query.board_select_public_private, [user_id])
+
+
 def __get_public_columns():
     """Returns all public columns from DB."""
     return db.execute_sql_dict(query.col_select_public)
 
 
+def __get_public_private_columns(user_id):
+    """Returns all public and private columns for the user from DB."""
+    return db.execute_sql_dict(query.col_select_public_private, [user_id])
+
+
 def __get_public_cards():
     """Returns all public cards from DB."""
     return db.execute_sql_dict(query.card_select_public)
+
+
+def __get_public_private_cards(user_id):
+    """Returns all public and private cards for the user from DB."""
+    return db.execute_sql_dict(query.card_select_public_private, user_id)
 
 
 def __get_public_board_by_board_id(board_id):
@@ -296,6 +311,13 @@ def get_all_public_data():
     """Return JSON for all data from the database tables: board, col, card.
     Return only public data for not sign in user."""
     return __get_data(__get_public_boards(), __get_public_columns(), __get_public_cards())
+
+
+def get_all_public_private_data(user_id):
+    """Return JSON for all data from the database tables: board, col, card.
+    Return public and private data for sign in user."""
+    return __get_data(__get_public_private_boards(user_id), __get_public_private_columns(user_id),
+                      __get_public_private_cards(user_id))
 
 
 def get_public_boards():
