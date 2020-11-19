@@ -68,7 +68,8 @@ export let dom = {
 
             let columnData = {
                 col_id: column.col_id,
-                col_board_id: column.col_board_id
+                col_board_id: column.col_board_id,
+                card_ids: []
             };
 
             let columnHTML = `
@@ -93,8 +94,12 @@ export let dom = {
         }
     },
     showCards: function (cards, columnId) {
+        let card_ids = [];
+
         for (let card of cards) {
             // console.log(cards);
+            card_ids.push(card.card_id);
+
             let cardData = {
                 card_id: card.card_id,
                 card_order: card.card_order,
@@ -117,6 +122,11 @@ export let dom = {
             // console.log(`nodeName: ${board.nodeName}`);
             board.insertAdjacentHTML('beforeend', cardHTML);
         }
+
+        let column = document.getElementById(`column-${columnId}`);
+        let columnDataSet = JSON.parse(column.dataset.columnData);
+        columnDataSet.card_ids = [...card_ids];
+        column.dataset.columnData = JSON.stringify(columnDataSet);
     },
     changeElementTitleAddEventListeners: function (elementTitleClassName, elementInputClassName) {
         let boardTitles = document.querySelectorAll(`.${elementTitleClassName}`);

@@ -70,7 +70,7 @@ export let dragAndDrop = {
 
         let sourceCard = document.getElementById(`card-${sourceCardId}`);
         let targetCard = document.getElementById(`card-${targetCardId}`);
-        
+
         if (dragAndDrop.cache.column_id === targetCardDataSet.column_id) {
             if (dragAndDrop.cache.card_order < targetCardDataSet.card_order) {
                 targetCard.insertAdjacentElement('afterend', sourceCard);
@@ -86,6 +86,7 @@ export let dragAndDrop = {
             dragAndDrop.correctCardOrder(dragAndDrop.cache.column_id);
         }
 
+        dragAndDrop.updateBoardJson(targetCardDataSet.board_id);
 
         // if (dragAndDrop.cache.board_id === targetCardId) {
         //     targetCard.insertAdjacentElement('afterend', sourceCard);
@@ -109,13 +110,18 @@ export let dragAndDrop = {
 
     },
     correctCardOrder: function (columnId) {
-        let column = document.getElementById(`board-column-content-${columnId}`);
+        let columnContent = document.getElementById(`board-column-content-${columnId}`);
         // console.log(column);
+        let card_ids = [];
+
         let cardOrder = 1;
-        for (let card of column.children) {
+        for (let card of columnContent.children) {
+
             if (card.className === 'card') {
                 // console.log(card);
                 let data = JSON.parse(card.dataset.cardData);
+                card_ids.push(data.card_id);
+
                 data.card_order = cardOrder;
                 data.column_id = columnId;
 
@@ -123,22 +129,95 @@ export let dragAndDrop = {
             }
             cardOrder++;
         }
+
+        let column = document.getElementById(`column-${columnId}`);
+        let columnDataSet = JSON.parse(column.dataset.columnData);
+        columnDataSet.card_ids = [...card_ids];
+        column.dataset.columnData = JSON.stringify(columnDataSet);
     },
     updateBoardJson: function (boardId) {
         for (let board of this.boards.result) {
             if (board.board_id === boardId) {
+
                 for (let column of board.columns) {
-                    for (let card of column.cards) {
-                        let cardHTML = document.getElementById(`card-${card.card_id}`);
+                    let columnHTML = document.getElementById(`column-${column.col_id}`);
+                    let columnDataSet = JSON.parse(columnHTML.dataset.columnData);
+                    console.log(columnDataSet);
+
+                    let newCards = [];
+
+                    let jsonCardIds = [];
+                    for (let cardJson of column.cards) {
+                        jsonCardIds.push(cardJson.card_id);
+                    }
+
+                    for (let cardId of columnDataSet.card_ids) {
+                        if (!jsonCardIds.includes(cardId)) {
+                            column.cards.push(this.getCardFromJson(boardId, column.col_id, cardId));
+                        }
+                    }
+
+                    for (let cardId of jsonCardIds) {
+                        if (!columnDataSet.card_ids.includes(cardId)) {
+                            this.removeCardFromJson(boardId, column.col_id, cardId);
+                        }
+                    }
+
+                    let intersection = jsonCardIds.filter(cardId => {
+                        return columnDataSet.card_ids.includes(cardId);
+                    });
+
+                    for (let cardIndex in column.cards) {
+                    // for (let cardJson of column.cards) {
+
+                        let cardHTML = document.getElementById(`card-${column.cards[cardIndex].card_id}`);
                         let cardDataSet = JSON.parse(cardHTML.dataset.cardData);
 
-                        card.card_col_id = cardDataSet.column_id;
-                        card.card_order = cardDataSet.card_order;
-                        card.card_title = cardHTML.lastElementChild.firstElementChild.innerText;
+                        if (!columnDataSet.card_ids.includes(column.cards[cardIndex].card_id)) {
+                        // if (!columnDataSet.card_ids.includes(cardDataSet.card_id)) {
+
+                            column.cards.splice(cardIndex, 1);
+                        } else {
+                            column.cards[cardIndex].card_col_id = cardDataSet.column_id;
+                            column.cards[cardIndex].card_order = cardDataSet.card_order;
+                            column.cards[cardIndex].card_title = cardHTML.lastElementChild.firstElementChild.innerText;
+                        }
                     }
                 }
+
                 console.log(board);
                 break;
+            }
+        }
+    },
+    getCardFromJson: function (boardId, columnId, cardId) {
+        for (let board of this.boards.result) {
+            if (board.board_id === boardId) {
+                for (let column of board.columns) {
+                    if (column.col_id === columnId) {
+                        for (let card of column.cards) {
+                            if (card.card_id === cardId) {
+                                return card;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    removeCardFromJson: function (boardId, columnId, cardId) {
+        for (let board of this.boards.result) {
+            if (board.board_id === boardId) {
+                for (let column of board.columns) {
+                    if (column.col_id === columnId) {
+                        for (let cardIndex in column.cards) {
+                        // for (let card of column.cards) {
+                            if (column.cards[cardIndex].card_id === cardId) {
+                                column.cards.splice(cardIndex, 1);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
