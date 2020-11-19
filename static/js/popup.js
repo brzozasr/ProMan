@@ -68,11 +68,13 @@ export let popupLoginHiding = {
     logoutButtonAddListener: function () {
         popupLoginHiding.logoutButton.addEventListener('click', this.logoutUser);
     },
+
     // All listener in one function
     popupAddListeners: function () {
         popupLoginHiding.logButtonAddListener();
         popupLoginHiding.regButtonAddListener();
         popupLoginHiding.logoutButtonAddListener();
+        popupLoginHiding.jsIsUserLogin(sessionStorage.getItem('users_login'));
     },
 
     userLoginButton: document.getElementById('popup-user-log'),
@@ -130,12 +132,8 @@ export let popupLoginHiding = {
                 };
                 dataHandler.loginUser(dataLogForm, function (dataLogForm) {
                     if (dataLogForm['login'] === 'Success') {
-                        console.log(dataLogForm);
-                        popupLoginHiding.loginButton.style.display = 'none';
-                        popupLoginHiding.registerButton.style.display = 'none';
-                        popupLoginHiding.userLoginButton.innerText = dataLogForm['users_login'];
-                        popupLoginHiding.userLoginButton.style.display = 'inline-block';
-                        popupLoginHiding.logoutButton.style.display = 'inline-block';
+                        popupLoginHiding.jsIsUserLogin(dataLogForm['users_login']);
+                        popupLoginHiding.jsSetSession(dataLogForm['users_id'], dataLogForm['users_login']);
                         popupLoginHiding.removeForm();
                     } else {
                         let divError = document.getElementById('popup-error');
@@ -169,7 +167,6 @@ export let popupLoginHiding = {
                 };
                 dataHandler.registerUser(dataRegForm, function (dataRegForm) {
                     if (dataRegForm['register'] === 'Success') {
-
                         popupLoginHiding.removeForm();
                     } else {
                         let divError = document.getElementById('popup-error');
@@ -178,8 +175,6 @@ export let popupLoginHiding = {
                     }
                 });
             }
-        } else {
-
         }
     },
 
@@ -227,7 +222,7 @@ export let popupLoginHiding = {
     },
 
     // Validating Form Field Password
-    validatePassword: function (password1, password2=null) {
+    validatePassword: function (password1, password2 = null) {
         let divForm = document.getElementById('popup-main');
         let formId = divForm.getElementsByTagName('form')[0].id;
 
@@ -264,7 +259,44 @@ export let popupLoginHiding = {
         }
     },
 
-    logoutUser: function () {
+    jsSetSession: function (users_id, users_login) {
+        sessionStorage.clear();
+        sessionStorage.setItem('users_id', users_id);
+        sessionStorage.setItem('users_login', users_login);
+    },
 
+    jsIsUserLogin: function (userName) {
+        let dataLogin = {
+            users_id: sessionStorage.getItem('users_id'),
+            users_login: sessionStorage.getItem('users_login')
+        };
+        dataHandler.isUserLogin(dataLogin, function (dataLogin) {
+            if (dataLogin['is_login'] === true) {
+                popupLoginHiding.topBarBtnAppearance(true, userName);
+            } else {
+                popupLoginHiding.topBarBtnAppearance(false, userName);
+            }
+        });
+    },
+
+    topBarBtnAppearance: function (isLogin, userName) {
+        if (isLogin) {
+            popupLoginHiding.loginButton.style.display = 'none';
+            popupLoginHiding.registerButton.style.display = 'none';
+            popupLoginHiding.userLoginButton.innerText = userName;
+            popupLoginHiding.userLoginButton.style.display = 'inline-block';
+            popupLoginHiding.logoutButton.style.display = 'inline-block';
+        } else {
+            popupLoginHiding.loginButton.style.display = 'inline-block';
+            popupLoginHiding.registerButton.style.display = 'inline-block';
+            popupLoginHiding.userLoginButton.innerText = '';
+            popupLoginHiding.userLoginButton.style.display = 'none';
+            popupLoginHiding.logoutButton.style.display = 'none';
+        }
+    },
+
+    logoutUser: function () {
+        popupLoginHiding.topBarBtnAppearance(false, '')
+        sessionStorage.clear();
     },
 };

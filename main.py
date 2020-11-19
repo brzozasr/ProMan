@@ -447,29 +447,54 @@ def user_login():
             session[SESSION_USER_ID] = user_data[SESSION_USER_ID]
             session[SESSION_USER_LOGIN] = user_data[SESSION_USER_LOGIN]
             result = jsonify({
+                'users_id': user_data[SESSION_USER_ID],
+                'users_login': user_data[SESSION_USER_LOGIN],
                 'login': 'Success',
-                'error': None,
-                'users_login': users_login
+                'error': None
             })
         else:
             result = jsonify({
+                'users_id': None,
+                'users_login': None,
                 'login': 'Failure',
-                'error': 'Invalid email address or password!',
-                'users_login': None
+                'error': 'Invalid email address or password!'
             })
     else:
         if type(log_data) == list:
             result = jsonify({
+                'users_id': None,
+                'users_login': None,
                 'login': 'Failure',
-                'error': 'Invalid email address or password!',
-                'users_login': None
+                'error': 'Invalid email address or password!'
             })
         else:
             result = jsonify({
+                'users_id': None,
+                'users_login': None,
                 'login': 'Failure',
-                'error': str(log_data),
-                'users_login': None
+                'error': str(log_data)
             })
+
+    return result
+
+
+@app.route('/is-user-login', methods=['POST'])
+def is_user_login():
+    data = request.get_json()
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        if int(data['users_id']) == session.get(SESSION_USER_ID) and \
+                data['users_login'] == session.get(SESSION_USER_LOGIN):
+            result = jsonify({
+                'is_login': True
+            })
+        else:
+            result = jsonify({
+                'is_login': False
+            })
+    else:
+        result = jsonify({
+            'is_login': False
+        })
 
     return result
 

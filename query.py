@@ -3,6 +3,14 @@ __query_all = {
     'board_select_public':
         """SELECT board_id, board_title, board_public, board_registration FROM board 
         WHERE board_public = true ORDER BY board_id;""",
+    'board_select_public_private':
+        """SELECT board.board_id, board.board_title, board.board_public, 
+        board.board_registration FROM board WHERE board.board_public = true
+        UNION
+        SELECT board.board_id, board.board_title, board.board_public, 
+        board.board_registration FROM board INNER JOIN coworker
+        ON board.board_id = coworker.coworker_board_id AND coworker.coworker_users_id = %s
+        ORDER BY board_id""",
     'col_select_public':
         """SELECT col.col_id, col.col_board_id, col.col_title, col.col_registration FROM col 
         INNER JOIN board ON board.board_public = true AND board.board_id = col.col_board_id
