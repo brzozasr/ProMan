@@ -522,6 +522,11 @@ def user_register():
     return result
 
 
+@app.route('/user-logout', methods=['POST'])
+def user_logout():
+    pass
+
+
 @app.route("/get-status/<int:status_id>")
 @json_response
 def get_status(status_id):

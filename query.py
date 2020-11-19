@@ -15,6 +15,10 @@ __query_all = {
         """SELECT col.col_id, col.col_board_id, col.col_title, col.col_registration FROM col 
         INNER JOIN board ON board.board_public = true AND board.board_id = col.col_board_id
         ORDER BY col.col_id;""",
+    'col_select_public_private':
+        """SELECT col.col_id, col.col_board_id, col.col_title, col.col_registration FROM col 
+        INNER JOIN board ON board.board_public = true AND board.board_id = col.col_board_id
+        ORDER BY col.col_id;""",
     'card_select_public':
         """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
         c.card_archive, c.card_registration

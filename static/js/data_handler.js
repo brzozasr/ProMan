@@ -137,14 +137,14 @@ export let dataHandler = {
         });
     },
     isUserLogin: function (isLogin, callback) {
-        this._api_post(`/user-logout`, isLogin, (response) => {
+        this._api_post(`/is-user-login`, isLogin, (response) => {
             // this._data[`allData`] = response;
             callback(response);
             console.log(response);
         });
     },
-    userLogout: function (isLogin, callback) {
-        this._api_post(`/is-user-login`, isLogin, (response) => {
+    userLogout: function (userData, callback) {
+        this._api_post(`/user-logout`, userData, (response) => {
             // this._data[`allData`] = response;
             callback(response);
             console.log(response);
