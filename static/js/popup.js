@@ -132,9 +132,9 @@ export let popupLoginHiding = {
                 };
                 dataHandler.loginUser(dataLogForm, function (dataLogForm) {
                     if (dataLogForm['login'] === 'Success') {
-                        popupLoginHiding.jsIsUserLogin(dataLogForm['users_login']);
                         popupLoginHiding.jsSetSession(dataLogForm['users_id'], dataLogForm['users_login']);
                         popupLoginHiding.removeForm();
+                        popupLoginHiding.jsIsUserLogin(dataLogForm['users_login']);
                     } else {
                         let divError = document.getElementById('popup-error');
                         divError.innerText = dataLogForm['error'];
@@ -274,7 +274,7 @@ export let popupLoginHiding = {
             if (dataLogin['is_login'] === true) {
                 popupLoginHiding.topBarBtnAppearance(true, userName);
             } else {
-                popupLoginHiding.topBarBtnAppearance(false, userName);
+                popupLoginHiding.topBarBtnAppearance(false, '');
             }
         });
     },
