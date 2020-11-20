@@ -231,7 +231,8 @@ export let dom = {
         if (column === null) {
             let columnData = {
                 col_id: col_id,
-                col_board_id: col_board_id
+                col_board_id: col_board_id,
+                card_ids: []
             };
 
             let columnHTML = `

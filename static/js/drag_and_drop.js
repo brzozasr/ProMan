@@ -13,6 +13,12 @@ export let dragAndDrop = {
         document.querySelectorAll('.card').forEach(function (card) {
             card.removeEventListener('drop', dragAndDrop.onDropHandler);
         });
+        document.querySelectorAll('.new-card-add-button-container').forEach(function (card) {
+            card.removeEventListener('drop', dragAndDrop.onDropOnButtonHandler);
+        });
+        document.querySelectorAll('.new-card-add-button-container').forEach(function (card) {
+            card.removeEventListener('dragover', dragAndDrop.onDragOverHandler);
+        });
 
         document.querySelectorAll('.card').forEach(function (card) {
             card.addEventListener('dragstart', dragAndDrop.onDragStartHandler);
@@ -22,6 +28,12 @@ export let dragAndDrop = {
         });
         document.querySelectorAll('.card').forEach(function (card) {
             card.addEventListener('drop', dragAndDrop.onDropHandler);
+        });
+        document.querySelectorAll('.new-card-add-button-container').forEach(function (card) {
+            card.addEventListener('drop', dragAndDrop.onDropOnButtonHandler);
+        });
+        document.querySelectorAll('.new-card-add-button-container').forEach(function (card) {
+            card.addEventListener('dragover', dragAndDrop.onDragOverHandler);
         });
 
         this.boards = boards;
@@ -34,7 +46,7 @@ export let dragAndDrop = {
 
     onDragOverHandler: function (e) {
         e.preventDefault();
-        console.log('dragover');
+        // console.log('dragover');
 
 
         // let currentCardData = JSON.parse(e.target.dataset.cardData);
@@ -72,7 +84,8 @@ export let dragAndDrop = {
     },
     onDropHandler: function (e) {
         e.preventDefault();
-        console.log('drop');
+        // console.log('drop');
+        // console.log(e.target);
         let targetCardId = e.target.id.split('-').reverse()[0];
         let targetCardDataSet = JSON.parse(e.target.dataset.cardData);
         let sourceCardId = dragAndDrop.cache.card_id;
@@ -98,6 +111,27 @@ export let dragAndDrop = {
         dataHandler.getAllData(function(boards) {
             dragAndDrop.boards = boards;
             dragAndDrop.updateBoardJson(targetCardDataSet.board_id);
+        });
+    },
+    onDropOnButtonHandler: function (e) {
+        e.preventDefault();
+        // console.log('buton drop');
+        let sourceCardId = dragAndDrop.cache.card_id;
+        let sourceCard = document.getElementById(`card-${sourceCardId}`);
+        let sourceCardDataSet = JSON.parse(sourceCard.dataset.cardData);
+
+        e.currentTarget.insertAdjacentElement('beforebegin', sourceCard);
+
+        let columnId = Number(e.currentTarget.parentElement.id.split('-').reverse()[0]);
+
+        dragAndDrop.correctCardOrder(columnId);
+        dragAndDrop.correctCardOrder(sourceCardDataSet.column_id);
+
+
+        // console.log(`buttondrop, boardId: ${sourceCardDataSet.board_id}`);
+        dataHandler.getAllData(function(boards) {
+            dragAndDrop.boards = boards;
+            dragAndDrop.updateBoardJson(sourceCardDataSet.board_id);
         });
     },
     correctCardOrder: function (columnId) {
@@ -127,6 +161,7 @@ export let dragAndDrop = {
         column.dataset.columnData = JSON.stringify(columnDataSet);
     },
     updateBoardJson: function (boardId) {
+        // console.log(`updateBoardJson, boardId: ${boardId}`);
         for (let board of this.boards.result) {
             if (board.board_id === boardId) {
 
@@ -148,10 +183,10 @@ export let dragAndDrop = {
 
                             // console.log(boardId, columnDataSet.col_id, cardId);
                             let newCard = this.getCardFromJson(boardId, cardId);
-                            if (newCard === undefined) {
-                                console.log(boardId, cardId);
-                            }
+
                             column.cards.push(newCard);
+                            // console.log('pushed');
+                            // console.log(column);
                         }
                     }
 
@@ -181,7 +216,7 @@ export let dragAndDrop = {
                     this.removeCardFromJson(card.board_id, card.col_id, card.card_id);
                 }
 
-                console.log(board.columns);
+                // console.log(board.columns);
                 for (let column of board.columns) {
                     // for (let cardIndex in column.cards) {
                     for (let cardJson of column.cards) {
@@ -197,8 +232,8 @@ export let dragAndDrop = {
                     column.cards.sort(dragAndDrop.sortCards);
                 }
 
-                console.log('JSON sent:')
-                console.log(board);
+                // console.log('JSON sent:')
+                // console.log(board);
                 dataHandler.dragAndDrop(board);
                 break;
             }
@@ -226,6 +261,7 @@ export let dragAndDrop = {
         }
     },
     removeCardFromJson: function (boardId, columnId, cardId) {
+        // console.log(boardId, columnId, cardId);
         for (let board of this.boards.result) {
             if (board.board_id === boardId) {
                 for (let column of board.columns) {
