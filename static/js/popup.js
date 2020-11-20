@@ -274,7 +274,7 @@ export let popupLoginHiding = {
             if (dataLogin['is_login'] === true) {
                 popupLoginHiding.topBarBtnAppearance(true, userName);
             } else {
-                popupLoginHiding.topBarBtnAppearance(false, userName);
+                popupLoginHiding.topBarBtnAppearance(false, '');
             }
         });
     },

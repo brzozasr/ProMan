@@ -1,3 +1,5 @@
+import { dataHandler } from "./data_handler.js";
+
 export let dragAndDrop = {
     cache: {},
     boards: {},
@@ -11,9 +13,6 @@ export let dragAndDrop = {
         document.querySelectorAll('.card').forEach(function (card) {
             card.addEventListener('drop', dragAndDrop.onDropHandler);
         });
-        // document.querySelectorAll('.card').forEach(function (card) {
-        //     card.addEventListener('dragend', dragAndDrop.onDropHandler);
-        // });
 
         this.boards = boards;
     },
@@ -86,28 +85,10 @@ export let dragAndDrop = {
             dragAndDrop.correctCardOrder(dragAndDrop.cache.column_id);
         }
 
-        dragAndDrop.updateBoardJson(targetCardDataSet.board_id);
-
-        // if (dragAndDrop.cache.board_id === targetCardId) {
-        //     targetCard.insertAdjacentElement('afterend', sourceCard);
-        // } else {
-        //     targetCard.insertAdjacentElement('afterend', sourceCard);
-        //
-        // }
-
-        // e.preventDefault();
-        // let draggedCard = document.getElementById(`card-${dragAndDrop.cache.card_id}`);
-        // let currentElement = document.getElementById(this.id);
-        // currentElement.insertAdjacentElement('afterend', draggedCard);
-        // dragAndDrop.correctCardOrder(dragAndDrop.cache.column_id);
-
-    },
-    onDragEndHandler: function () {
-        // let cardDataSet = JSON.parse(e.target.dataset.cardData);
-        // dragAndDrop.updateBoardJson(cardDataSet.board_id);
-    },
-    updateColumnId: function () {
-
+        dataHandler.getAllData(function(boards) {
+            dragAndDrop.boards = boards;
+            dragAndDrop.updateBoardJson(targetCardDataSet.board_id);
+        });
     },
     correctCardOrder: function (columnId) {
         let columnContent = document.getElementById(`board-column-content-${columnId}`);
@@ -142,7 +123,7 @@ export let dragAndDrop = {
                 for (let column of board.columns) {
                     let columnHTML = document.getElementById(`column-${column.col_id}`);
                     let columnDataSet = JSON.parse(columnHTML.dataset.columnData);
-                    console.log(columnDataSet);
+                    // console.log(columnDataSet);
 
                     let newCards = [];
 
@@ -153,35 +134,38 @@ export let dragAndDrop = {
 
                     for (let cardId of columnDataSet.card_ids) {
                         if (!jsonCardIds.includes(cardId)) {
-                            column.cards.push(this.getCardFromJson(boardId, column.col_id, cardId));
+
+                            // console.log(boardId, columnDataSet.col_id, cardId);
+                            let newCard = this.getCardFromJson(boardId, cardId);
+                            column.cards.push(newCard);
                         }
                     }
 
                     for (let cardId of jsonCardIds) {
                         if (!columnDataSet.card_ids.includes(cardId)) {
-                            this.removeCardFromJson(boardId, column.col_id, cardId);
+                            // console.log(columnDataSet.card_ids);
+                            // console.log(jsonCardIds);
+                            // console.log(cardId);
+                            // console.log(boardId, columnDataSet.col_id, cardId);
+                            this.removeCardFromJson(boardId, columnDataSet.col_id, cardId);
                         }
                     }
 
                     let intersection = jsonCardIds.filter(cardId => {
                         return columnDataSet.card_ids.includes(cardId);
                     });
+                    // console.log(column);
 
-                    for (let cardIndex in column.cards) {
-                    // for (let cardJson of column.cards) {
-
-                        let cardHTML = document.getElementById(`card-${column.cards[cardIndex].card_id}`);
+                    // for (let cardIndex in column.cards) {
+                    for (let cardJson of column.cards) {
+                        // console.log(cardJson);
+                        let cardHTML = document.getElementById(`card-${cardJson.card_id}`);
                         let cardDataSet = JSON.parse(cardHTML.dataset.cardData);
 
-                        if (!columnDataSet.card_ids.includes(column.cards[cardIndex].card_id)) {
-                        // if (!columnDataSet.card_ids.includes(cardDataSet.card_id)) {
+                        cardJson.card_col_id = cardDataSet.column_id;
+                        cardJson.card_order = cardDataSet.card_order;
+                        cardJson.card_title = cardHTML.lastElementChild.firstElementChild.innerText;
 
-                            column.cards.splice(cardIndex, 1);
-                        } else {
-                            column.cards[cardIndex].card_col_id = cardDataSet.column_id;
-                            column.cards[cardIndex].card_order = cardDataSet.card_order;
-                            column.cards[cardIndex].card_title = cardHTML.lastElementChild.firstElementChild.innerText;
-                        }
                     }
                 }
 
@@ -190,15 +174,18 @@ export let dragAndDrop = {
             }
         }
     },
-    getCardFromJson: function (boardId, columnId, cardId) {
+    getCardFromJson: function (boardId, cardId) {
+        // console.log(boardId, columnId, cardId);
         for (let board of this.boards.result) {
+            // console.log(board);
             if (board.board_id === boardId) {
+
                 for (let column of board.columns) {
-                    if (column.col_id === columnId) {
-                        for (let card of column.cards) {
-                            if (card.card_id === cardId) {
-                                return card;
-                            }
+                    // console.log(column);
+                    for (let card of column.cards) {
+                        // console.log(cardId, card);
+                        if (card.card_id === cardId) {
+                            return card;
                         }
                     }
                 }
@@ -210,6 +197,7 @@ export let dragAndDrop = {
             if (board.board_id === boardId) {
                 for (let column of board.columns) {
                     if (column.col_id === columnId) {
+
                         for (let cardIndex in column.cards) {
                         // for (let card of column.cards) {
                             if (column.cards[cardIndex].card_id === cardId) {

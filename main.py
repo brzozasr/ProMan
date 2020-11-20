@@ -499,6 +499,7 @@ def user_login():
 @app.route('/is-user-login', methods=['POST'])
 def is_user_login():
     data = request.get_json()
+    print(data);
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         if int(data['users_id']) == session.get(SESSION_USER_ID) and \
                 data['users_login'] == session.get(SESSION_USER_LOGIN):
