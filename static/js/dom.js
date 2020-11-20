@@ -10,6 +10,10 @@ export let dom = {
         // This function should run once, when the page is loaded.
 
         sockets.init();
+
+        document.addEventListener('keydown', e => {
+            this.keyMapping(e);
+        });
     },
     loadAllData: function () {
         dataHandler.getAllData(function(boards) {
@@ -57,10 +61,6 @@ export let dom = {
         this.newBoardAddButton();
         popupLoginHiding.popupAddListeners();
         dom.updateEventListeners();
-
-        document.addEventListener('keydown', e => {
-            this.keyMapping(e);
-        });
 
         dragAndDrop.init(boards);
     },
