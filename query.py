@@ -22,7 +22,7 @@ __query_all = {
         SELECT cpr.col_id, cpr.col_board_id, cpr.col_title, cpr.col_registration FROM col AS cpr
         INNER JOIN board AS bpr ON bpr.board_public = false AND bpr.board_id = cpr.col_board_id
         INNER JOIN coworker AS cow ON cpr.col_board_id = cow.coworker_board_id AND cow.coworker_users_id = %s
-        ORDER BY col_board_id;""",
+        ORDER BY col_id;""",
     'card_select_public':
         """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
         c.card_archive, c.card_registration

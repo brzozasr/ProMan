@@ -1,4 +1,5 @@
 import {dataHandler} from "./data_handler.js";
+import {dom} from "./dom.js";
 
 export let popupLoginHiding = {
     loginForm: `
@@ -135,6 +136,13 @@ export let popupLoginHiding = {
                         popupLoginHiding.jsSetSession(dataLogForm['users_id'], dataLogForm['users_login']);
                         popupLoginHiding.removeForm();
                         popupLoginHiding.jsIsUserLogin(dataLogForm['users_login']);
+
+                        /* Reload the page */
+                        dataHandler.getAllData(function(boards) {
+                            let boardContainer = document.querySelector(".board-container");
+                            boardContainer.innerHTML = '';
+                            dom.showAllData(boards);
+                        });
                     } else {
                         let divError = document.getElementById('popup-error');
                         divError.innerText = dataLogForm['error'];
@@ -303,6 +311,12 @@ export let popupLoginHiding = {
             if (dataLogout['logout'] === 'Success') {
                 popupLoginHiding.topBarBtnAppearance(false, '');
                 sessionStorage.clear();
+                /* Reload page function */
+                dataHandler.getAllData(function(boards) {
+                    let boardContainer = document.querySelector(".board-container");
+                    boardContainer.innerHTML = '';
+                    dom.showAllData(boards);
+                });
             } else {
                 popupLoginHiding.topBarBtnAppearance(true, sessionStorage.getItem('users_login'));
             }
