@@ -41,7 +41,7 @@ def __get_public_board_by_board_id(board_id):
 
 def __get_public_private_board_by_board_id(user_id, board_id):
     """Returns the public and private bord for the user from DB selected by board ID."""
-    return db.execute_sql_dict(query.board_select_public_private_by_board_id, [user_id, board_id, board_id])
+    return db.execute_sql_dict(query.board_select_public_private_by_board_id, {'user_id': user_id, 'board_id': board_id})
 
 
 def __get_public_columns_by_board_id(board_id):

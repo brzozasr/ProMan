@@ -185,6 +185,7 @@ def add_board():
     db.execute_sql(query.col_insert_default_cols, {'board_id': result[0][0]})
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        db.execute_sql(query.coworker_insert_new_coworker, [session.get(SESSION_USER_ID), result[0][0]])
         json_board = get_public_private_board(session.get(SESSION_USER_ID), result[0][0])
     else:
         json_board = get_public_board(result[0][0])
