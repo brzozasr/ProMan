@@ -47,29 +47,59 @@ __query_all = {
         """SELECT board_id, board_title, board_public, board_registration 
         FROM board WHERE board_id = %s AND board_public = true
         ORDER BY board_id;""",
+    'board_select_public_private_by_board_id':
+        """SELECT DISTINCT ON (b.board_id) b.board_id, b.board_title, b.board_public, b.board_registration
+        FROM board AS b
+        INNER JOIN coworker AS c
+        ON (c.coworker_board_id = b.board_id AND c.coworker_users_id = %s AND b.board_id = %s 
+        AND b.board_public = false) OR (b.board_id = %s AND b.board_public = true)
+        ORDER BY b.board_id;""",
     'col_select_public_by_col_board_id':
         """SELECT c.col_id, c.col_board_id, c.col_title, c.col_registration 
         FROM col AS c INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.col_board_id AND c.col_board_id = %s
         ORDER BY c.col_id;""",
+    'col_select_public_private_by_col_board_id':
+        """SELECT c.col_id, c.col_board_id, c.col_title, c.col_registration 
+        FROM col AS c INNER JOIN board AS b 
+        ON b.board_id = c.col_board_id AND c.col_board_id = %s ORDER BY c.col_id;""",
     'card_select_public_by_card_board_id':
         """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
         c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.card_board_id AND c.card_archive = false AND c.card_board_id = %s
         ORDER BY c.card_order;""",
+    'card_select_public_private_by_card_board_id':
+        """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
+        c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
+        ON b.board_id = c.card_board_id AND c.card_archive = false AND c.card_board_id = %s
+        ORDER BY c.card_order;""",
     'col_select_public_by_col_id':
         """SELECT c.col_id, c.col_board_id, c.col_title, c.col_registration 
         FROM col AS c INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.col_board_id AND c.col_id = %s;""",
+    'col_select_public_private_by_col_id':
+        """SELECT c.col_id, c.col_board_id, c.col_title, c.col_registration 
+        FROM col AS c INNER JOIN board AS b 
+        ON b.board_id = c.col_board_id AND c.col_id = %s;""",
     'card_select_public_by_card_col_id':
         """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
         c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.card_board_id AND c.card_archive = false AND c.card_col_id = %s
         ORDER BY c.card_order;""",
+    'card_select_public_private_by_card_col_id':
+        """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
+        c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
+        ON b.board_id = c.card_board_id AND c.card_archive = false AND c.card_col_id = %s
+        ORDER BY c.card_order;""",
     'card_select_public_by_card_id':
         """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
         c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
         ON b.board_public = true AND b.board_id = c.card_board_id 
+        AND c.card_archive = false AND c.card_id = %s;""",
+    'card_select_public_private_by_card_id':
+        """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
+        c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
+        ON b.board_id = c.card_board_id 
         AND c.card_archive = false AND c.card_id = %s;""",
 
     # Queries to set data from JSON and insert or update DB.

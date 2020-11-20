@@ -46,7 +46,7 @@ def get_all_data():
 def get_boards():
     """All the boards as a JSON"""
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
+        data = get_public_private_boards(session.get(SESSION_USER_ID))
     else:
         data = get_public_boards()
 
@@ -72,7 +72,7 @@ def get_board(board_id):
     """Get the board by ID and returns as a JSON
     with the columns and the cards."""
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
+        data = get_public_private_board(session.get(SESSION_USER_ID), board_id)
     else:
         data = get_public_board(board_id)
 
@@ -89,7 +89,7 @@ def get_column(col_id):
     """Get the board by ID and returns as a JSON
     with the columns and the cards."""
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
+        data = get_public_private_col(col_id)
     else:
         data = get_public_col(col_id)
 
@@ -105,7 +105,7 @@ def get_column(col_id):
 def get_card(card_id):
     """Get the card by ID and returns as a JSON."""
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
+        data = get_public_private_card(card_id)
     else:
         data = get_public_card(card_id)
 
@@ -167,20 +167,19 @@ def card_change_title():
 
 @app.route('/add-board', methods=['POST'])
 def add_board():
+    data = request.get_json()
+    board_title = data['board_title']
+
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        board_title = None  # TODO
         board_public = False
     else:
-        data = request.get_json()
-        board_title = data['board_title']
         board_public = True
 
     result = db.execute_sql(query.board_insert_new_board, [board_title, board_public])
     db.execute_sql(query.col_insert_default_cols, {'board_id': result[0][0]})
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_board = None
+        json_board = get_public_private_board(session.get(SESSION_USER_ID), result[0][0])
     else:
         json_board = get_public_board(result[0][0])
 
@@ -195,16 +194,10 @@ def add_board():
 
 @app.route('/add-card', methods=['POST'])
 def add_card():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        card_board_id = None  # TODO
-        card_col_id = None  # TODO
-        card_title = None  # TODO
-    else:
-        data = request.get_json()
-        card_board_id = data['card_board_id']
-        card_col_id = data['card_col_id']
-        card_title = data['card_title']
+    data = request.get_json()
+    card_board_id = data['card_board_id']
+    card_col_id = data['card_col_id']
+    card_title = data['card_title']
 
     result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
     if result:
@@ -215,7 +208,7 @@ def add_card():
     db.execute_sql(query.card_insert_new_card, [card_board_id, card_col_id, card_order, card_title])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_col = None
+        json_col = get_public_private_col(card_col_id)
     else:
         json_col = get_public_col(card_col_id)
 
@@ -230,19 +223,14 @@ def add_card():
 
 @app.route('/add-column', methods=['POST'])
 def add_column():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        col_board_id = None  # TODO
-        col_title = None  # TODO
-    else:
-        data = request.get_json()
-        col_board_id = data['col_board_id']
-        col_title = data['col_title']
+    data = request.get_json()
+    col_board_id = data['col_board_id']
+    col_title = data['col_title']
 
     db.execute_sql(query.col_insert_new_col, [col_board_id, col_title])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_board = None
+        json_board = get_public_private_board(session.get(SESSION_USER_ID), col_board_id)
     else:
         json_board = get_public_board(col_board_id)
 
@@ -257,17 +245,13 @@ def add_column():
 
 @app.route('/delete-board', methods=['POST'])
 def delete_board():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        board_id = None  # TODO
-    else:
-        data = request.get_json()
-        board_id = data['board_id']
+    data = request.get_json()
+    board_id = data['board_id']
 
     db.execute_sql(query.board_delete_by_id_board, [board_id])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_boards = None  # TODO
+        json_boards = get_all_public_private_data(session.get(SESSION_USER_ID))
     else:
         json_boards = get_all_public_data()
 
@@ -282,19 +266,14 @@ def delete_board():
 
 @app.route('/delete-column', methods=['POST'])
 def delete_column():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        col_id = None  # TODO
-        col_board_id = None  # TODO
-    else:
-        data = request.get_json()
-        col_id = data['col_id']
-        col_board_id = data['col_board_id']
+    data = request.get_json()
+    col_id = data['col_id']
+    col_board_id = data['col_board_id']
 
     db.execute_sql(query.col_delete_by_col_id, [col_id])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_board = None  # TODO
+        json_board = get_public_private_board(session.get(SESSION_USER_ID), col_board_id)
     else:
         json_board = get_public_board(col_board_id)
 
@@ -306,6 +285,8 @@ def delete_column():
 
     return response
 
+# ^^^ DONE UP ^^^
+# TODO DOWN
 
 @app.route('/delete-card', methods=['POST'])
 def delete_card():
