@@ -5,6 +5,16 @@ export let dragAndDrop = {
     boards: {},
     init: function (boards) {
         document.querySelectorAll('.card').forEach(function (card) {
+            card.removeEventListener('dragstart', dragAndDrop.onDragStartHandler);
+        });
+        document.querySelectorAll('.card').forEach(function (card) {
+            card.removeEventListener('dragover', dragAndDrop.onDragOverHandler);
+        });
+        document.querySelectorAll('.card').forEach(function (card) {
+            card.removeEventListener('drop', dragAndDrop.onDropHandler);
+        });
+
+        document.querySelectorAll('.card').forEach(function (card) {
             card.addEventListener('dragstart', dragAndDrop.onDragStartHandler);
         });
         document.querySelectorAll('.card').forEach(function (card) {
@@ -120,6 +130,7 @@ export let dragAndDrop = {
         for (let board of this.boards.result) {
             if (board.board_id === boardId) {
 
+                let cardsToRemove = [];
                 for (let column of board.columns) {
                     let columnHTML = document.getElementById(`column-${column.col_id}`);
                     let columnDataSet = JSON.parse(columnHTML.dataset.columnData);
@@ -137,6 +148,9 @@ export let dragAndDrop = {
 
                             // console.log(boardId, columnDataSet.col_id, cardId);
                             let newCard = this.getCardFromJson(boardId, cardId);
+                            if (newCard === undefined) {
+                                console.log(boardId, cardId);
+                            }
                             column.cards.push(newCard);
                         }
                     }
@@ -147,7 +161,13 @@ export let dragAndDrop = {
                             // console.log(jsonCardIds);
                             // console.log(cardId);
                             // console.log(boardId, columnDataSet.col_id, cardId);
-                            this.removeCardFromJson(boardId, columnDataSet.col_id, cardId);
+                            let cardDataToRemove = {
+                                board_id: boardId,
+                                col_id: columnDataSet.col_id,
+                                card_id: cardId
+                            };
+                            cardsToRemove.push(cardDataToRemove);
+                            // this.removeCardFromJson(boardId, columnDataSet.col_id, cardId);
                         }
                     }
 
@@ -155,7 +175,14 @@ export let dragAndDrop = {
                         return columnDataSet.card_ids.includes(cardId);
                     });
                     // console.log(column);
+                }
 
+                for (let card of cardsToRemove) {
+                    this.removeCardFromJson(card.board_id, card.col_id, card.card_id);
+                }
+
+                console.log(board.columns);
+                for (let column of board.columns) {
                     // for (let cardIndex in column.cards) {
                     for (let cardJson of column.cards) {
                         // console.log(cardJson);
@@ -167,12 +194,18 @@ export let dragAndDrop = {
                         cardJson.card_title = cardHTML.lastElementChild.firstElementChild.innerText;
 
                     }
+                    column.cards.sort(dragAndDrop.sortCards);
                 }
 
+                console.log('JSON sent:')
                 console.log(board);
+                dataHandler.dragAndDrop(board);
                 break;
             }
         }
+    },
+    sortCards: function (card1, card2) {
+        return card1.card_order - card2.card_order;
     },
     getCardFromJson: function (boardId, cardId) {
         // console.log(boardId, columnId, cardId);

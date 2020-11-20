@@ -128,6 +128,14 @@ export let dataHandler = {
             console.log(response);
         });
     },
+    dragAndDrop: function (boardJson) {
+        this._api_post(`/change-card-position`, boardJson, (response) => {
+            // this._data[`allData`] = response;
+            // callback(response);
+
+            console.log(response);
+        });
+    },
     removeBoard: function (boardData) {
         this._api_post(`/delete-board`, boardData, (response) => {
             // this._data[`allData`] = response;

@@ -1,4 +1,5 @@
 import { dom } from "./dom.js";
+import {dragAndDrop} from "./drag_and_drop.js";
 
 export let sockets = {
     init: function () {
@@ -87,6 +88,19 @@ export let sockets = {
             console.log(dataParsed);
 
             dom.addNewCard(dataParsed);
+            dragAndDrop.init();
+            dom.updateEventListeners();
+        });
+
+        socket.on('dragAndDrop', function(data) {
+            console.log('Update card order');
+            let board = document.querySelector(`#board-${data.data.board_id} .board-columns`);
+            board.innerHTML = '';
+
+            console.log(data.data.columns);
+            dom.showColumns(data.data.columns, data.data.board_id);
+
+            dragAndDrop.init();
             dom.updateEventListeners();
         });
     }

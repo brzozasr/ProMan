@@ -437,6 +437,8 @@ def change_card_position():
 
         print(cards)
 
+        socketio.emit('dragAndDrop', {'data': data}, broadcast=True)
+
     result = db.execute_multi_sql(query.card_update_card_position, cards)
 
     if result is None:
