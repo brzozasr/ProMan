@@ -10,7 +10,7 @@ __query_all = {
         SELECT board.board_id, board.board_title, board.board_public, 
         board.board_registration FROM board INNER JOIN coworker
         ON board.board_id = coworker.coworker_board_id AND coworker.coworker_users_id = %s
-        ORDER BY board_id""",
+        ORDER BY board_id;""",
     'col_select_public':
         """SELECT col.col_id, col.col_board_id, col.col_title, col.col_registration FROM col 
         INNER JOIN board ON board.board_public = true AND board.board_id = col.col_board_id

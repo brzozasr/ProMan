@@ -399,8 +399,6 @@ def change_card_position():
     else:
         cards = compare_dict(get_public_board_dict(board_id), data)
 
-        print(cards)
-
         socketio.emit('dragAndDrop', {'data': data}, broadcast=True)
 
     result = db.execute_multi_sql(query.card_update_card_position, cards)
