@@ -51,8 +51,8 @@ __query_all = {
         """SELECT DISTINCT ON (b.board_id) b.board_id, b.board_title, b.board_public, b.board_registration
         FROM board AS b
         INNER JOIN coworker AS c
-        ON (c.coworker_board_id = b.board_id AND c.coworker_users_id = %s AND b.board_id = %s 
-        AND b.board_public = false) OR (b.board_id = %s AND b.board_public = true)
+        ON (c.coworker_board_id = b.board_id AND c.coworker_users_id = %(user_id)s AND b.board_id = %(board_id)s 
+        AND b.board_public = false) OR (b.board_id = %(board_id)s AND b.board_public = true)
         ORDER BY b.board_id;""",
     'col_select_public_by_col_board_id':
         """SELECT c.col_id, c.col_board_id, c.col_title, c.col_registration 
@@ -146,6 +146,8 @@ __query_all = {
         """SELECT users_id, users_login, users_pass FROM users WHERE users_login = %s;""",
     'users_insert_new_user':
         """INSERT INTO users (users_login, users_pass) VALUES (%s, %s);""",
+    'coworker_insert_new_coworker':
+        """INSERT INTO coworker (coworker_users_id, coworker_board_id) VALUES (%s, %s);""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id
