@@ -264,7 +264,7 @@ def delete_board():
     db.execute_sql(query.board_delete_by_id_board, [board_id])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_boards = get_all_public_private_data(session.get(SESSION_USER_ID))
+        json_boards = get_all_public_private_data(str(session.get(SESSION_USER_ID)))
     else:
         json_boards = get_all_public_data()
 
