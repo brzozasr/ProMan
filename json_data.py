@@ -41,7 +41,8 @@ def __get_public_board_by_board_id(board_id):
 
 def __get_public_private_board_by_board_id(user_id, board_id):
     """Returns the public and private bord for the user from DB selected by board ID."""
-    return db.execute_sql_dict(query.board_select_public_private_by_board_id, {'user_id': user_id, 'board_id': board_id})
+    return db.execute_sql_dict(query.board_select_public_private_by_board_id,
+                               {'user_id': user_id, 'board_id': board_id})
 
 
 def __get_public_columns_by_board_id(board_id):
@@ -375,8 +376,8 @@ def get_public_private_board(user_id, board_id):
     the database with the columns and the cards.
     Return public and private data for sign in user."""
     return __get_board(__get_public_private_board_by_board_id(user_id, board_id),
-                       __get_public_private_columns_by_board_id(board_id),
-                       __get_public_private_cards_by_board_id(board_id))
+                         __get_public_private_columns_by_board_id(board_id),
+                         __get_public_private_cards_by_board_id(board_id))
 
 
 def get_public_col(col_id):
