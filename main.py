@@ -285,19 +285,12 @@ def delete_column():
 
     return response
 
-# ^^^ DONE UP ^^^
-# TODO DOWN
 
 @app.route('/delete-card', methods=['POST'])
 def delete_card():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        card_id = None  # TODO
-        card_col_id = None  # TODO
-    else:
-        data = request.get_json()
-        card_id = data['card_id']
-        card_col_id = data['card_col_id']
+    data = request.get_json()
+    card_id = data['card_id']
+    card_col_id = data['card_col_id']
 
     db.execute_sql(query.card_delete_by_card_id, [card_id])
 
@@ -308,7 +301,7 @@ def delete_card():
         db.execute_multi_sql(query.card_update_card_order_by_card_id, cards_list)
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_column = None  # TODO
+        json_column = get_public_private_col(card_col_id)
     else:
         json_column = get_public_col(card_col_id)  # card_col_id
 
@@ -323,14 +316,9 @@ def delete_card():
 
 @app.route('/archive-card', methods=['POST'])
 def archive_card():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        card_id = None  # TODO
-        card_col_id = None  # TODO
-    else:
-        data = request.get_json()
-        card_id = data['card_id']
-        card_col_id = data['card_col_id']
+    data = request.get_json()
+    card_id = data['card_id']
+    card_col_id = data['card_col_id']
 
     db.execute_sql(query.card_update_card_archive, [card_id])
 
@@ -341,7 +329,7 @@ def archive_card():
         db.execute_multi_sql(query.card_update_card_order_by_card_id, cards_list)
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_column = None  # TODO
+        json_column = get_public_private_col(card_col_id)
     else:
         json_column = get_public_col(card_col_id)  # card_col_id
 
@@ -356,14 +344,9 @@ def archive_card():
 
 @app.route('/unarchive-card', methods=['POST'])
 def unarchive_card():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO write function get data after sign in
-        card_id = None  # TODO
-        card_col_id = None  # TODO
-    else:
-        data = request.get_json()
-        card_id = data['card_id']
-        card_col_id = data['card_col_id']
+    data = request.get_json()
+    card_id = data['card_id']
+    card_col_id = data['card_col_id']
 
     result = db.execute_sql(query.card_select_max_card_order_in_col, {'col_id': card_col_id})
     if result:
@@ -374,7 +357,7 @@ def unarchive_card():
     db.execute_sql(query.card_update_card_unarchive, [card_order, card_id])
 
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_column = None  # TODO
+        json_column = get_public_private_col(card_col_id)
     else:
         json_column = get_public_col(card_col_id)  # card_col_id
 
@@ -389,16 +372,13 @@ def unarchive_card():
 
 @app.route('/change-card-position', methods=['POST'])
 def change_card_position():
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        data = None  # TODO
-        board_id = None  # TODO
-        cards = None  # TODO write function get data after sign in
-    else:
-        data = request.get_json()
-        board_id = data['board_id']
-        cards = compare_dict(get_public_board_dict(board_id), data)
+    data = request.get_json()
+    board_id = data['board_id']
 
-        print(cards)
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        cards = compare_dict(get_public_private_board_dict(session.get(SESSION_USER_ID), board_id), data)
+    else:
+        cards = compare_dict(get_public_board_dict(board_id), data)
 
     result = db.execute_multi_sql(query.card_update_card_position, cards)
 
