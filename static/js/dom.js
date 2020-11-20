@@ -55,7 +55,8 @@ export let dom = {
             let boardsContainer = document.querySelector('.board-container');
             boardsContainer.insertAdjacentHTML("beforeend", boardList);
 
-            this.showColumns(boards.result[key].columns, boards.result[key].board_id);
+            let isPublic = boards.result[key].board_public;
+            this.showColumns(boards.result[key].columns, boards.result[key].board_id, isPublic);
         }
 
         this.newBoardAddButton();
@@ -64,14 +65,15 @@ export let dom = {
 
         dragAndDrop.init(boards);
     },
-    showColumns: function (columns, boardId) {
+    showColumns: function (columns, boardId, isPublic) {
         // console.dir(boardId);
         for (let column of columns) {
 
             let columnData = {
                 col_id: column.col_id,
                 col_board_id: column.col_board_id,
-                card_ids: []
+                card_ids: [],
+                isPublic: isPublic
             };
 
             let columnHTML = `
@@ -294,13 +296,15 @@ export let dom = {
 
             boards[boards.length - 1].insertAdjacentHTML('afterend', newBoard);
 
-            this.showColumns(board.columns, board.board_id);
+            let isPublic = board.board_public;
+            this.showColumns(board.columns, board.board_id, isPublic);
         }
     },
     removeCard: function (e, cardFromSocket) {
         if (e !== null) {
             let cardId = e.currentTarget.parentElement.id.split('-').reverse()[0];
             let card = document.getElementById(`card-${cardId}`);
+            let columnData = JSON.parse(card.parentElement.parentElement.dataset.columnData);
 
             card.remove();
 
@@ -309,7 +313,8 @@ export let dom = {
 
             let cardData = {
                 card_id: cardId,
-                card_col_id: cardDataSet.column_id
+                card_col_id: cardDataSet.column_id,
+                is_public: columnData.isPublic
             };
 
             dataHandler.removeCard(cardData);
@@ -334,7 +339,8 @@ export let dom = {
 
             let columnData = {
                 col_id: columnId,
-                col_board_id: columnDataSet.col_board_id
+                col_board_id: columnDataSet.col_board_id,
+                is_public: columnDataSet.isPublic
             };
 
             console.log(columnData);
@@ -356,10 +362,12 @@ export let dom = {
         if (e !== null ) {
             let boardId = e.currentTarget.previousElementSibling.id.split('-').reverse()[0];
             let board = document.getElementById(`board-${boardId}`);
+            let column = JSON.parse(board.lastElementChild.firstElementChild.dataset.columnData);
             board.remove();
 
             let boardData = {
-                board_id: boardId
+                board_id: boardId,
+                is_public: column.isPublic
             };
 
             dataHandler.removeBoard(boardData);
@@ -391,9 +399,11 @@ export let dom = {
                     if (activeElement.className === 'board-title-input') {
                         let boardId = activeElement.parentElement.parentElement.parentElement.id.split('-').reverse()[0];
                         let boardTitle = activeElement.parentElement.parentElement.firstElementChild.firstElementChild.innerText;
+                        let columnData = JSON.parse(activeElement.parentElement.parentElement.nextElementSibling.firstElementChild.dataset.columnData);
                         let data = {
                             board_id: boardId,
-                            board_title: boardTitle
+                            board_title: boardTitle,
+                            is_public: columnData.isPublic
                         };
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.updateBoardName(data);
@@ -401,17 +411,23 @@ export let dom = {
                         let columnDataSet = JSON.parse(activeElement.parentElement.parentElement.dataset.columnData);
                         let data = {
                             col_board_id: columnDataSet.col_id,
-                            col_title: activeElement.value
+                            col_title: activeElement.value,
+                            is_public: columnDataSet.isPublic
                         };
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.updateColumnName(data);
                     } else if (activeElement.className === 'card-title-input') {
                         let cardDataSet = JSON.parse(activeElement.parentElement.parentElement.dataset.cardData);
+                        let columnDataSet = JSON.parse(activeElement.parentElement.parentElement.parentElement.parentElement.dataset.columnData);
+                        console.log('columnDataSet');
+                        console.log(columnDataSet);
                         let data = {
                             card_id: cardDataSet.card_id,
-                            card_title: activeElement.value
+                            card_title: activeElement.value,
+                            is_public: columnDataSet.isPublic
                         };
                         // console.log(`data: ${JSON.stringify(data)}`);
+                        console.log(data);
                         dataHandler.updateCardName(data);
                     }
 
@@ -421,8 +437,9 @@ export let dom = {
                 catch {
                     if (activeElement.className === 'new-board-txt-input') {
                         let boardTitle = activeElement.value;
+
                         let data = {
-                            board_title: boardTitle
+                            board_title: boardTitle,
                         };
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.createNewBoard(data, function (data) {
@@ -446,10 +463,13 @@ export let dom = {
                         let boardId = activeElement.id.split('-').reverse()[1];
                         let columnId = activeElement.parentElement.parentElement.id.split('-').reverse()[0];
 
+                        let columnDataSet = JSON.parse(activeElement.parentElement.parentElement.parentElement.parentElement.dataset.columnData);
+
                         let data = {
                             card_board_id: boardId,
                             card_col_id: columnId,
-                            card_title: cardTitle
+                            card_title: cardTitle,
+                            is_public: columnDataSet.isPublic
                         } ;
 
                         // console.log(activeElement);
@@ -467,13 +487,14 @@ export let dom = {
                     } else if (activeElement.className === 'new-column-txt-input') {
                         let boardId = activeElement.parentElement.parentElement.parentElement.parentElement.parentElement.id.split('-').reverse()[0];
                         let columnTitle = activeElement.value;
-
+                        let columnDataSet = JSON.parse(activeElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.firstElementChild.dataset.columnData);
                         // console.log(`boardId: ${boardId}, columnTitle: ${columnTitle}`);
                         // this.addNewCard(cardTitle, columnId);
 
                         let data = {
                             col_board_id: boardId,
-                            col_title: columnTitle
+                            col_title: columnTitle,
+                            is_public: columnDataSet.isPublic
                         } ;
 
                         dataHandler.createNewColumn(data, function (data) {

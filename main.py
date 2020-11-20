@@ -130,7 +130,8 @@ def board_change_title():
     else:
         result_dict = {'result': result}
 
-    socketio.emit('boardNameChange', {'data': data}, broadcast=True)
+    if data['is_public']:
+        socketio.emit('boardNameChange', {'data': data}, broadcast=True)
 
     return jsonify(result_dict)
 
@@ -148,7 +149,8 @@ def column_change_title():
     else:
         result_dict = {'result': result}
 
-    socketio.emit('columnNameChange', {'data': data}, broadcast=True)
+    if data['is_public']:
+        socketio.emit('columnNameChange', {'data': data}, broadcast=True)
 
     return jsonify(result_dict)
 
@@ -166,7 +168,8 @@ def card_change_title():
     else:
         result_dict = {'result': result}
 
-    socketio.emit('cardNameChange', {'data': data}, broadcast=True)
+    if data['is_public']:
+        socketio.emit('cardNameChange', {'data': data}, broadcast=True)
 
     return jsonify(result_dict)
 
@@ -189,14 +192,13 @@ def add_board():
         json_board = get_public_private_board(session.get(SESSION_USER_ID), result[0][0])
     else:
         json_board = get_public_board(result[0][0])
+        socketio.emit('addBoard', {'data': json_board}, broadcast=True)
 
     response = app.response_class(
         response=json_board,
         status=200,
         mimetype='application/json'
     )
-
-    socketio.emit('addBoard', {'data': json_board}, broadcast=True)
 
     return response
 
@@ -221,13 +223,14 @@ def add_card():
     else:
         json_col = get_public_col(card_col_id)
 
+    if data['is_public']:
+        socketio.emit('addCard', {'data': json_col}, broadcast=True)
+
     response = app.response_class(
         response=json_col,
         status=200,
         mimetype='application/json'
     )
-
-    socketio.emit('addCard', {'data': json_col}, broadcast=True)
 
     return response
 
@@ -245,13 +248,14 @@ def add_column():
     else:
         json_board = get_public_board(col_board_id)
 
+    if data['is_public']:
+        socketio.emit('addColumn', {'data': json_board}, broadcast=True)
+
     response = app.response_class(
         response=json_board,
         status=200,
         mimetype='application/json'
     )
-
-    socketio.emit('addColumn', {'data': json_board}, broadcast=True)
 
     return response
 
@@ -268,13 +272,14 @@ def delete_board():
     else:
         json_boards = get_all_public_data()
 
+    if data['is_public']:
+        socketio.emit('removeBoard', {'data': data}, broadcast=True)
+
     response = app.response_class(
         response=json_boards,
         status=200,
         mimetype='application/json'
     )
-
-    socketio.emit('removeBoard', {'data': data}, broadcast=True)
 
     return response
 
@@ -292,13 +297,14 @@ def delete_column():
     else:
         json_board = get_public_board(col_board_id)
 
+    if data['is_public']:
+        socketio.emit('removeColumn', {'data': data}, broadcast=True)
+
     response = app.response_class(
         response=json_board,
         status=200,
         mimetype='application/json'
     )
-
-    socketio.emit('removeColumn', {'data': data}, broadcast=True)
 
     return response
 
@@ -322,13 +328,14 @@ def delete_card():
     else:
         json_column = get_public_col(card_col_id)  # card_col_id
 
+    if data['is_public']:
+        socketio.emit('removeCard', {'data': data}, broadcast=True)
+
     response = app.response_class(
         response=json_column,
         status=200,
         mimetype='application/json'
     )
-
-    socketio.emit('removeCard', {'data': data}, broadcast=True)
 
     return response
 
@@ -399,6 +406,7 @@ def change_card_position():
     else:
         cards = compare_dict(get_public_board_dict(board_id), data)
 
+    if data['board_public']:
         socketio.emit('dragAndDrop', {'data': data}, broadcast=True)
 
     result = db.execute_multi_sql(query.card_update_card_position, cards)

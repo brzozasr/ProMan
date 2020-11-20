@@ -98,6 +98,8 @@ export let sockets = {
             board.innerHTML = '';
 
             console.log(data.data.columns);
+
+            let isPublic = data.data.board_public;
             dom.showColumns(data.data.columns, data.data.board_id);
 
             dragAndDrop.init();
