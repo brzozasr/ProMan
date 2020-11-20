@@ -222,6 +222,8 @@ def add_card():
         json_col = get_public_private_col(card_col_id)
     else:
         json_col = get_public_col(card_col_id)
+
+    if data['is_public']:
         socketio.emit('addCard', {'data': json_col}, broadcast=True)
 
     response = app.response_class(
@@ -245,6 +247,8 @@ def add_column():
         json_board = get_public_private_board(session.get(SESSION_USER_ID), col_board_id)
     else:
         json_board = get_public_board(col_board_id)
+
+    if data['is_public']:
         socketio.emit('addColumn', {'data': json_board}, broadcast=True)
 
     response = app.response_class(
@@ -402,6 +406,7 @@ def change_card_position():
     else:
         cards = compare_dict(get_public_board_dict(board_id), data)
 
+    if data['board_public']:
         socketio.emit('dragAndDrop', {'data': data}, broadcast=True)
 
     result = db.execute_multi_sql(query.card_update_card_position, cards)

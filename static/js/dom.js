@@ -437,8 +437,9 @@ export let dom = {
                 catch {
                     if (activeElement.className === 'new-board-txt-input') {
                         let boardTitle = activeElement.value;
+
                         let data = {
-                            board_title: boardTitle
+                            board_title: boardTitle,
                         };
                         // console.log(`data: ${JSON.stringify(data)}`);
                         dataHandler.createNewBoard(data, function (data) {
@@ -462,10 +463,13 @@ export let dom = {
                         let boardId = activeElement.id.split('-').reverse()[1];
                         let columnId = activeElement.parentElement.parentElement.id.split('-').reverse()[0];
 
+                        let columnDataSet = JSON.parse(activeElement.parentElement.parentElement.parentElement.parentElement.dataset.columnData);
+
                         let data = {
                             card_board_id: boardId,
                             card_col_id: columnId,
-                            card_title: cardTitle
+                            card_title: cardTitle,
+                            is_public: columnDataSet.isPublic
                         } ;
 
                         // console.log(activeElement);
@@ -483,13 +487,14 @@ export let dom = {
                     } else if (activeElement.className === 'new-column-txt-input') {
                         let boardId = activeElement.parentElement.parentElement.parentElement.parentElement.parentElement.id.split('-').reverse()[0];
                         let columnTitle = activeElement.value;
-
+                        let columnDataSet = JSON.parse(activeElement.parentElement.parentElement.parentElement.parentElement.nextElementSibling.firstElementChild.dataset.columnData);
                         // console.log(`boardId: ${boardId}, columnTitle: ${columnTitle}`);
                         // this.addNewCard(cardTitle, columnId);
 
                         let data = {
                             col_board_id: boardId,
-                            col_title: columnTitle
+                            col_title: columnTitle,
+                            is_public: columnDataSet.isPublic
                         } ;
 
                         dataHandler.createNewColumn(data, function (data) {
