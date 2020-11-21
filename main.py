@@ -120,7 +120,10 @@ def get_card(card_id):
 @app.route("/get-archived-cards")
 def get_archived_cards():
     """Get all archived cards returns as a JSON."""
-    data = get_all_archive_cards()
+    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
+        data = get_public_private_archive_cards(str(session.get(SESSION_USER_ID)))
+    else:
+        data = get_public_archive_cards()
 
     if is_iterable(data):
         response = app.response_class(

@@ -96,9 +96,14 @@ def __get_public_private_card_by_card_id(card_id):
     return db.execute_sql_dict(query.card_select_public_private_by_card_id, [card_id])
 
 
-def __get_all_archive_cards():
-    """Returns the public and private cards from DB"""
-    return db.execute_sql_dict(query.card_select_by_archive_cards)
+def __get_public_archive_cards():
+    """Returns the public archived cards from DB"""
+    return db.execute_sql_dict(query.card_select_public_archive_cards)
+
+
+def __get_public_private_archive_cards(user_id):
+    """Returns the archived public and private cards from DB"""
+    return db.execute_sql_dict(query.card_select_public_private_archive_cards, [user_id])
 
 
 def __get_col_unarchive(col_id):
@@ -461,9 +466,14 @@ def get_public_private_board_dict(user_id, board_id):
                        __get_public_private_cards_by_board_id(board_id), return_json=False)
 
 
-def get_all_archive_cards():
-    """Return JSON for all archived cards."""
-    return __get_archive_cards(__get_all_archive_cards())
+def get_public_archive_cards():
+    """Return JSON for the public archived cards."""
+    return __get_archive_cards(__get_public_archive_cards())
+
+
+def get_public_private_archive_cards(user_id):
+    """Return JSON for the public and private archived cards."""
+    return __get_archive_cards(__get_public_private_archive_cards(user_id))
 
 
 def get_column_to_unarchive(col_id):
@@ -477,4 +487,4 @@ if __name__ == '__main__':
     # print(get_public_board(1))
     # print(get_public_col(3))
     # print(get_public_card(15))
-    print(get_all_archive_cards())
+    print(get_public_archive_cards())
