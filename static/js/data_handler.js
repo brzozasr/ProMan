@@ -157,14 +157,13 @@ export let dataHandler = {
             console.log(response);
         });
     },
-    unarchiveCard: function (cardData) {
+    unarchiveCard: function (cardData, callback) {
         this._api_post(`/unarchive-card`, cardData, (response) => {
             // this._data[`allData`] = response;
             console.log('response');
             console.log(response);
 
             callback(response);
-
         });
     },
     registerUser: function (userData, callback) {

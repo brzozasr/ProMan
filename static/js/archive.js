@@ -38,11 +38,9 @@ export let archive = {
         let [card_id, card_col_id] = card.id.split('-').reverse();
 
         let cardData = {
-            card_id: card_col_id,
-            card_col_id: card_id
+            card_id: card_id,
+            card_col_id: card_col_id
         };
-
-        console.log(cardData);
 
         dataHandler.unarchiveCard(cardData, function (column) {
             card.remove();
@@ -50,6 +48,7 @@ export let archive = {
             let destColumn = document.getElementById(`column-${card_col_id}`);
             destColumn.lastElementChild.innerHTML = '';
             dom.showCards(column.cards, card_col_id);
+            dom.archiveCardAddEventListener();
         });
     },
 
