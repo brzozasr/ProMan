@@ -148,9 +148,24 @@ __query_all = {
         """INSERT INTO users (users_login, users_pass) VALUES (%s, %s);""",
     'coworker_insert_new_coworker':
         """INSERT INTO coworker (coworker_users_id, coworker_board_id) VALUES (%s, %s);""",
-    'card_select_by_archive_cards':
+    'card_select_by_archive_cards':  # TODO
         """SELECT card_id, card_board_id, card_col_id, card_order, card_title, card_archive, card_registration 
         FROM card WHERE card_archive = true ORDER BY card_registration;""",
+    'card_select_public_archive_cards':
+        """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
+        c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
+        ON b.board_public = true AND b.board_id = c.card_board_id AND c.card_archive = true
+        ORDER BY c.card_order;""",
+    'card_select_public_private_archive_cards':
+        """SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
+        c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
+        ON b.board_public = true AND b.board_id = c.card_board_id AND c.card_archive = true
+        UNION
+        SELECT c.card_id, c.card_board_id, c.card_col_id, c.card_order, c.card_title, 
+        c.card_archive, c.card_registration FROM card AS c INNER JOIN board AS b 
+        ON b.board_public = false AND b.board_id = c.card_board_id AND c.card_archive = true
+        INNER JOIN coworker AS co ON b.board_id = co.coworker_board_id AND co.coworker_users_id = %s
+        ORDER BY card_order;""",
     'col_select_col_unarchive':
         """SELECT col_id, col_board_id, col_title, col_registration 
         FROM col WHERE col_id = %s;""",
