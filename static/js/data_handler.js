@@ -150,6 +150,13 @@ export let dataHandler = {
             console.log(response);
         });
     },
+    archiveCard: function (cardData, callback) {
+        this._api_post(`/archive-card`, cardData, (response) => {
+            // this._data[`allData`] = response;
+            callback(response);
+            console.log(response);
+        });
+    },
     registerUser: function (userData, callback) {
         this._api_post(`/user-register`, userData, (response) => {
             // this._data[`allData`] = response;

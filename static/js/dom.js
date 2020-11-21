@@ -115,7 +115,7 @@ export let dom = {
             let cardHTML = `
                 
                 <div class="card" id="card-${cardData.card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
-                    <div class="card-remove"><img id="archive-${cardData.card_id}" class="card-archive" src="static/img/archive.png" alt="Archive"><i class="fas fa-trash-alt"></i></div>
+                    <img id="archive-${cardData.card_id}" class="card-archive" src="static/img/archive.png" alt="Archive"><div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card.card_title}</span>
                         <input class="card-title-input" type="text" value="${card.card_title}" />
@@ -208,7 +208,7 @@ export let dom = {
 
             let cardHTML = `
                 <div class="card" id="card-${card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
-                    <div class="card-remove"><img id="archive-${card_id}" class="card-archive" src="static/img/archive.png" alt="Archive"><i class="fas fa-trash-alt"></i></div>
+                    <img id="archive-${card_id}" class="card-archive" src="static/img/archive.png" alt="Archive"><div class="card-remove"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card_title}</span>
                         <input class="card-title-input" type="text" value="${card_title}" />
@@ -384,6 +384,30 @@ export let dom = {
             trashIcon.removeEventListener('click', dom.removeBoard);
             trashIcon.addEventListener('click', dom.removeBoard);
         }
+    },
+    archiveCardAddEventListener: function () {
+        let archiveIcons = document.querySelectorAll('.card-archive');
+
+        for (let archiveIcon of archiveIcons) {
+            archiveIcon.removeEventListener('click', dom.archiveCard);
+            archiveIcon.addEventListener('click', dom.archiveCard);
+        }
+    },
+    archiveCard: function (e) {
+        let card = e.currentTarget.parentElement;
+        let cardDataSet = JSON.parse(card.dataset.cardData);
+
+        let cardData = {
+            card_id: cardDataSet.card_id,
+            card_col_id: cardDataSet.column_id
+        };
+
+        dataHandler.archiveCard(cardData, function (archivedCards) {
+            card.remove();
+            dragAndDrop.correctCardOrder(cardDataSet.column_id);
+
+            archive.addAllArchiveCards();
+        });
     },
     keyMapping: function (e) {
         let activeElement = document.activeElement;
@@ -582,6 +606,7 @@ export let dom = {
         dom.removeCardAddEventListener();
         dom.removeColumnAddEventListener();
         dom.removeBoardAddEventListener();
+        dom.archiveCardAddEventListener();
     },
     chevronsAddListener: boardHiding.chevronsAddListener
 };

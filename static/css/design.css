@@ -139,7 +139,7 @@ section.board{
     background: var(--status-4);
 }
 
-.card-remove, .column-remove {
+.column-remove {
     display: block;
     position: absolute;
     top: 4px;
@@ -148,10 +148,19 @@ section.board{
     cursor: pointer;
 }
 
+.card-remove {
+    display: block;
+    position: absolute;
+    top: 5px;
+    right: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
 .card-archive {
     display: block;
     position: absolute;
-    top: -3px;
+    /*top: -3px;*/
     right: 15px;
     height: 17px;
     cursor: pointer;
