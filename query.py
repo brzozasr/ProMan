@@ -148,6 +148,9 @@ __query_all = {
         """INSERT INTO users (users_login, users_pass) VALUES (%s, %s);""",
     'coworker_insert_new_coworker':
         """INSERT INTO coworker (coworker_users_id, coworker_board_id) VALUES (%s, %s);""",
+    'card_select_by_archive_cards':
+        """SELECT card_id, card_board_id, card_col_id, card_order, card_title, card_archive, card_registration 
+        FROM card WHERE card_archive = true ORDER BY card_registration;""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id

@@ -4,6 +4,7 @@ import { boardHiding } from "./boards.js";
 import { dragAndDrop } from "./drag_and_drop.js";
 import { sockets } from "./sockets.js";
 import { popupLoginHiding } from "./popup.js";
+import {archive} from "./archive.js";
 
 export let dom = {
     init: function () {
@@ -61,6 +62,7 @@ export let dom = {
 
         this.newBoardAddButton();
         popupLoginHiding.popupAddListeners();
+        archive.addArchiveEventListener();
         dom.updateEventListeners();
 
         dragAndDrop.init(boards);
@@ -113,7 +115,7 @@ export let dom = {
             let cardHTML = `
                 
                 <div class="card" id="card-${cardData.card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
-                    <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                    <div class="card-remove"><img id="archive-${cardData.card_id}" class="card-archive" src="static/img/archive.png" alt="Archive"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card.card_title}</span>
                         <input class="card-title-input" type="text" value="${card.card_title}" />
@@ -206,7 +208,7 @@ export let dom = {
 
             let cardHTML = `
                 <div class="card" id="card-${card_id}" draggable="true" data-card-data=${JSON.stringify(cardData)}>
-                    <div class="card-remove"><i class="fas fa-trash-alt"></i></div>
+                    <div class="card-remove"><img id="archive-${card_id}" class="card-archive" src="static/img/archive.png" alt="Archive"><i class="fas fa-trash-alt"></i></div>
                     <div class="card-title-container">
                         <span class="card-title">${card_title}</span>
                         <input class="card-title-input" type="text" value="${card_title}" />

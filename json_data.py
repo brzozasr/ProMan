@@ -95,16 +95,32 @@ def __get_public_private_card_by_card_id(card_id):
     return db.execute_sql_dict(query.card_select_public_private_by_card_id, [card_id])
 
 
+def __get_all_archive_cards():
+    """Returns the public and private cards from DB"""
+    return db.execute_sql_dict(query.card_select_by_archive_cards)
+
+
 def __dict_date_to_str(real_dict, dict_key):
     """Converts date format to string from given RealDict."""
-    if len(real_dict) > 0:
-        result_list = []
-        for row in real_dict:
-            row[dict_key] = str(row[dict_key])
-            result_list.append(row)
-        return result_list
+    if is_iterable(real_dict):
+        if len(real_dict) > 0:
+            result_list = []
+            for row in real_dict:
+                row[dict_key] = str(row[dict_key])
+                result_list.append(row)
+            return result_list
+        else:
+            return None
     else:
         return None
+
+
+def is_iterable(obj):
+    try:
+        iter(obj)
+        return True
+    except TypeError:
+        return False
 
 
 def __get_data(boards, columns, cards, return_json=True):
@@ -285,6 +301,25 @@ def __get_card(card, return_json=True):
         return result_dict
 
 
+def __get_archive_cards(cards_archive, return_json=True):
+    result_dict = {}
+    result_dict.update({'cards_archived': []})
+    cards_archive = __dict_date_to_str(cards_archive, 'card_registration')
+
+    tmp_dict = {}
+    if cards_archive is not None:
+        for card in cards_archive:
+            for k, v in card.items():
+                tmp_dict[k] = v
+            result_dict['cards_archive'].append(tmp_dict.copy())
+            tmp_dict.clear()
+
+    if return_json:
+        return json.dumps(result_dict, indent=4)
+    else:
+        return result_dict
+
+
 def __get_dict_key(dict_key):
     return dict_key['card_id']
 
@@ -423,9 +458,15 @@ def get_public_private_board_dict(user_id, board_id):
                        __get_public_private_cards_by_board_id(board_id), return_json=False)
 
 
+def get_all_archive_cards():
+    """Return JSON for all archived cards."""
+    return __get_archive_cards(__get_all_archive_cards())
+
+
 if __name__ == '__main__':
     # print(__get_data(__get_public_boards(), __get_public_columns(), __get_public_cards()))
     # print(__get_boards(__get_public_boards(), __get_public_columns()))
     # print(get_public_board(1))
     # print(get_public_col(3))
-    print(get_public_card(15))
+    # print(get_public_card(15))
+    print(get_all_archive_cards())
