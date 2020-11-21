@@ -171,6 +171,12 @@ export let dataHandler = {
             console.log(response);
         });
     },
+    getArchiveCards: function (callback) {
+        this._api_get(`/get-archived-cards`, (response) => {
+            callback(response);
+            console.log(response);
+        });
+    },
     _createNewCard: function (cardTitle, boardId, statusId, callback) {
         // creates new card, saves it and calls the callback function with its data
     },

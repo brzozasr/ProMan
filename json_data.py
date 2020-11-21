@@ -2,6 +2,7 @@ import json
 
 from database_tools import *
 from query import *
+from utils import *
 
 
 def __get_public_boards():
@@ -113,14 +114,6 @@ def __dict_date_to_str(real_dict, dict_key):
             return None
     else:
         return None
-
-
-def is_iterable(obj):
-    try:
-        iter(obj)
-        return True
-    except TypeError:
-        return False
 
 
 def __get_data(boards, columns, cards, return_json=True):
@@ -311,7 +304,7 @@ def __get_archive_cards(cards_archive, return_json=True):
         for card in cards_archive:
             for k, v in card.items():
                 tmp_dict[k] = v
-            result_dict['cards_archive'].append(tmp_dict.copy())
+            result_dict['cards_archived'].append(tmp_dict.copy())
             tmp_dict.clear()
 
     if return_json:

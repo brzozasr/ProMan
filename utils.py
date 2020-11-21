@@ -15,6 +15,14 @@ def set_card_order(cards: list):
         return []
 
 
+def is_iterable(obj):
+    try:
+        iter(obj)
+        return True
+    except TypeError:
+        return False
+
+
 if __name__ == '__main__':
     # test_list = [(8, 1), (3, 2), (9, 3), (10, 4), (69, 5), (70, 6), (71, 7), (72, 8), (73, 9), (81, 10), (82, 11)]
     # test_list = []

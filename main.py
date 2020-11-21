@@ -117,6 +117,28 @@ def get_card(card_id):
     return response
 
 
+@app.route("/get-archived-cards")
+def get_archived_cards():
+    """Get all archived cards returns as a JSON."""
+    data = get_all_archive_cards()
+
+    if is_iterable(data):
+        response = app.response_class(
+            response=data,
+            status=200,
+            mimetype='application/json'
+        )
+    else:
+        response = jsonify(
+            {
+                'error': data,
+                'get_cards': 'Failure'
+            }
+        )
+
+    return response
+
+
 @app.route('/board-change-title', methods=['POST'])
 def board_change_title():
     data = request.get_json()

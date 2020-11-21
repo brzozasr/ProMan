@@ -62,7 +62,7 @@ export let dom = {
 
         this.newBoardAddButton();
         popupLoginHiding.popupAddListeners();
-        archive.addArchiveEventListener();
+        archive.initArchivedCards();
         dom.updateEventListeners();
 
         dragAndDrop.init(boards);
