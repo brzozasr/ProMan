@@ -151,6 +151,12 @@ __query_all = {
     'card_select_by_archive_cards':
         """SELECT card_id, card_board_id, card_col_id, card_order, card_title, card_archive, card_registration 
         FROM card WHERE card_archive = true ORDER BY card_registration;""",
+    'col_select_col_unarchive':
+        """SELECT col_id, col_board_id, col_title, col_registration 
+        FROM col WHERE col_id = %s;""",
+    'card_select_cards_unarchive':
+        """SELECT card_id, card_board_id, card_col_id, card_order, card_title, card_archive, 
+        card_registration FROM card WHERE card_col_id = %s AND card_archive = false;""",
     # 'board_insert_new_board':
         # """WITH ROWS AS (
         # INSERT INTO board (board_title, board_public) VALUES (%s, %s) RETURNING board_id

@@ -101,6 +101,16 @@ def __get_all_archive_cards():
     return db.execute_sql_dict(query.card_select_by_archive_cards)
 
 
+def __get_col_unarchive(col_id):
+    """Returns the column for the card which is going to unarchive from DB"""
+    return db.execute_sql_dict(query.col_select_col_unarchive, [col_id])
+
+
+def __get_cards_unarchive(col_id):
+    """Returns the cards from the column where is going to unarchive the card from DB"""
+    return db.execute_sql_dict(query.card_select_cards_unarchive, [col_id])
+
+
 def __dict_date_to_str(real_dict, dict_key):
     """Converts date format to string from given RealDict."""
     if is_iterable(real_dict):
@@ -404,8 +414,8 @@ def get_public_private_board(user_id, board_id):
     the database with the columns and the cards.
     Return public and private data for sign in user."""
     return __get_board(__get_public_private_board_by_board_id(user_id, board_id),
-                         __get_public_private_columns_by_board_id(board_id),
-                         __get_public_private_cards_by_board_id(board_id))
+                       __get_public_private_columns_by_board_id(board_id),
+                       __get_public_private_cards_by_board_id(board_id))
 
 
 def get_public_col(col_id):
@@ -454,6 +464,11 @@ def get_public_private_board_dict(user_id, board_id):
 def get_all_archive_cards():
     """Return JSON for all archived cards."""
     return __get_archive_cards(__get_all_archive_cards())
+
+
+def get_column_to_unarchive(col_id):
+    """Return JSON for the column where the card is going to unarchive."""
+    return __get_column(__get_col_unarchive(col_id), __get_cards_unarchive(col_id))
 
 
 if __name__ == '__main__':
