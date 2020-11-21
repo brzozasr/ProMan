@@ -404,10 +404,7 @@ def unarchive_card():
 
     db.execute_sql(query.card_update_card_unarchive, [card_order, card_id])
 
-    if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
-        json_column = get_public_private_col(card_col_id)
-    else:
-        json_column = get_public_col(card_col_id)  # card_col_id
+    json_column = get_column_to_unarchive(card_col_id)  # card_col_id
 
     response = app.response_class(
         response=json_column,
