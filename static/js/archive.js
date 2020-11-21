@@ -1,8 +1,9 @@
 import {dataHandler} from "./data_handler.js";
+import {dom} from "./dom.js";
 
 export let archive = {
-    archiveCard: function (card_id, card_title) {
-        return `<div id="arch-card-${card_id}" class="arch-card">${card_title}<img id="unarch-btn-${card_id}" class="arch-unarchive" src="static/img/unarchive.png" alt="^">
+    archiveCard: function (card_id, card_title, col_id) {
+        return `<div id="arch-card-${col_id}-${card_id}" class="arch-card">${card_title}<img id="unarch-btn-${card_id}" class="arch-unarchive" src="static/img/unarchive.png" alt="^">
         </div>`;
     },
 
@@ -20,6 +21,36 @@ export let archive = {
 
     moveButtonAddListener: function () {
         archive.moveButton.addEventListener('click', this.hidSowArchive);
+    },
+
+    unarchiveAddEventListeners: function () {
+        let unarchiveButtons = document.querySelectorAll('.arch-unarchive');
+
+        for (let button of unarchiveButtons) {
+            button.removeEventListener('click', archive.unarchiveCard);
+            button.addEventListener('click', archive.unarchiveCard);
+        }
+    },
+
+    unarchiveCard: function (e) {
+        let card = e.currentTarget.parentElement;
+
+        let [card_id, card_col_id] = card.id.split('-').reverse();
+
+        let cardData = {
+            card_id: card_col_id,
+            card_col_id: card_id
+        };
+
+        console.log(cardData);
+
+        dataHandler.unarchiveCard(cardData, function (column) {
+            card.remove();
+
+            let destColumn = document.getElementById(`column-${card_col_id}`);
+            destColumn.lastElementChild.innerHTML = '';
+            dom.showCards(column.cards, card_col_id);
+        });
     },
 
     hidSowArchive: function () {
@@ -53,9 +84,15 @@ export let archive = {
             for (let key of Object.keys(cardsData.cards_archived)) {
                 let card_id = cardsData.cards_archived[key].card_id;
                 let card_title = cardsData.cards_archived[key].card_title;
+                let col_id = cardsData.cards_archived[key].card_col_id;
 
-                archive.cardContainer.insertAdjacentHTML('beforeend', archive.archiveCard(card_id, card_title));
+                // console.log(archive.archiveCard(card_id, card_title, col_id));
+                archive.cardContainer.insertAdjacentHTML('beforeend', archive.archiveCard(card_id, card_title, col_id));
+
             }
+
+            console.log(archive.cardContainer);
+            archive.unarchiveAddEventListeners();
         });
     },
 };

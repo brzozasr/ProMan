@@ -415,6 +415,8 @@ def unarchive_card():
         mimetype='application/json'
     )
 
+    print(json_column)
+
     return response
 
 
