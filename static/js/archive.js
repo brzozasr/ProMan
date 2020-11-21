@@ -1,5 +1,6 @@
 import {dataHandler} from "./data_handler.js";
 import {dom} from "./dom.js";
+import {dragAndDrop} from "./drag_and_drop.js";
 
 export let archive = {
     archiveCard: function (card_id, card_title, col_id) {
@@ -36,10 +37,16 @@ export let archive = {
         let card = e.currentTarget.parentElement;
 
         let [card_id, card_col_id] = card.id.split('-').reverse();
+        console.log(card.id);
+        console.log(`column-${card_col_id}`);
+
+        let column = document.getElementById(`column-${card_col_id}`);
+        let columnDataSet = JSON.parse(column.dataset.columnData);
 
         let cardData = {
             card_id: card_id,
-            card_col_id: card_col_id
+            card_col_id: card_col_id,
+            board_public: columnDataSet.isPublic
         };
 
         dataHandler.unarchiveCard(cardData, function (column) {
@@ -49,6 +56,9 @@ export let archive = {
             destColumn.lastElementChild.innerHTML = '';
             dom.showCards(column.cards, card_col_id);
             dom.archiveCardAddEventListener();
+
+            dragAndDrop.init();
+            dom.updateEventListeners();
         });
     },
 

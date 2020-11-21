@@ -396,10 +396,13 @@ export let dom = {
     archiveCard: function (e) {
         let card = e.currentTarget.parentElement;
         let cardDataSet = JSON.parse(card.dataset.cardData);
+        let column = document.getElementById(`column-${cardDataSet.column_id}`);
+        let columnDataSet = JSON.parse(column.dataset.columnData);
 
         let cardData = {
             card_id: cardDataSet.card_id,
-            card_col_id: cardDataSet.column_id
+            card_col_id: cardDataSet.column_id,
+            board_public: columnDataSet.isPublic
         };
 
         dataHandler.archiveCard(cardData, function (archivedCards) {

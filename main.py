@@ -387,6 +387,9 @@ def archive_card():
         mimetype='application/json'
     )
 
+    if data['board_public']:
+        socketio.emit('archive', {'data': data, 'json_column': json_column}, broadcast=True)
+
     return response
 
 
@@ -412,7 +415,8 @@ def unarchive_card():
         mimetype='application/json'
     )
 
-    print(json_column)
+    if data['board_public']:
+        socketio.emit('unarchive', {'data': data, 'json_column': json_column}, broadcast=True)
 
     return response
 
