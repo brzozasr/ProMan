@@ -393,24 +393,33 @@ export let dom = {
             archiveIcon.addEventListener('click', dom.archiveCard);
         }
     },
-    archiveCard: function (e) {
-        let card = e.currentTarget.parentElement;
-        let cardDataSet = JSON.parse(card.dataset.cardData);
-        let column = document.getElementById(`column-${cardDataSet.column_id}`);
-        let columnDataSet = JSON.parse(column.dataset.columnData);
+    archiveCard: function (e, input=null) {
+        if (input === null) {
+            let card = e.currentTarget.parentElement;
+            let cardDataSet = JSON.parse(card.dataset.cardData);
+            let column = document.getElementById(`column-${cardDataSet.column_id}`);
+            let columnDataSet = JSON.parse(column.dataset.columnData);
 
-        let cardData = {
-            card_id: cardDataSet.card_id,
-            card_col_id: cardDataSet.column_id,
-            board_public: columnDataSet.isPublic
-        };
+            let cardData = {
+                card_id: cardDataSet.card_id,
+                card_col_id: cardDataSet.column_id,
+                board_public: columnDataSet.isPublic
+            };
 
-        dataHandler.archiveCard(cardData, function (archivedCards) {
-            card.remove();
-            dragAndDrop.correctCardOrder(cardDataSet.column_id);
+            dataHandler.archiveCard(cardData, function (archivedCards) {
+                card.remove();
+                dragAndDrop.correctCardOrder(cardDataSet.column_id);
 
+                console.log('native')
+                archive.addAllArchiveCards();
+            });
+        } else {
+            input.card.remove();
+            dragAndDrop.correctCardOrder(input.card_col_id);
+            console.log('socket')
             archive.addAllArchiveCards();
-        });
+        }
+
     },
     keyMapping: function (e) {
         let activeElement = document.activeElement;

@@ -113,28 +113,52 @@ export let sockets = {
             console.log(data);
             console.log(`arch-card-${data.data.card_col_id}-${data.data.card_id}`);
             let card = document.getElementById(`arch-card-${data.data.card_col_id}-${data.data.card_id}`);
-            card.remove();
 
-            let destColumn = document.getElementById(`column-${data.data.card_col_id}`);
-            destColumn.lastElementChild.innerHTML = '';
-            dom.showCards(json_column.cards, data.data.card_col_id);
-            dom.archiveCardAddEventListener();
+            if (card !== null) {
+                let input = {
+                    card: card,
+                    card_col_id: data.data.card_col_id,
+                    cards: json_column.cards
+                };
 
-            dragAndDrop.init();
-            dom.updateEventListeners();
+                archive.unarchiveCard(null, input);
+            }
+
+
+
+            // card.remove();
+            //
+            // let destColumn = document.getElementById(`column-${data.data.card_col_id}`);
+            // destColumn.lastElementChild.innerHTML = '';
+            // dom.showCards(json_column.cards, data.data.card_col_id);
+            // dom.archiveCardAddEventListener();
+            //
+            // dragAndDrop.init();
+            // dom.updateEventListeners();
         });
 
         socket.on('archive', function(data) {
             console.log('Archive');
-            let json_column = JSON.parse(data.json_column);
+            // let json_column = JSON.parse(data.json_column);
             console.log(data);
             console.log(`card-${data.data.card_id}`);
             let card = document.getElementById(`card-${data.data.card_id}`);
-            card.remove();
 
-            dragAndDrop.correctCardOrder(data.data.card_col_id);
+            if (card !== null) {
+                let input = {
+                    card: card,
+                    card_col_id: data.data.card_col_id
+                };
 
-            archive.addAllArchiveCards();
+                dom.archiveCard(null, input);
+            }
+
+
+            // card.remove();
+
+            // dragAndDrop.correctCardOrder(data.data.card_col_id);
+
+            // archive.addAllArchiveCards();
         });
     }
 }

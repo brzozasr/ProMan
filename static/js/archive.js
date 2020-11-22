@@ -33,33 +33,45 @@ export let archive = {
         }
     },
 
-    unarchiveCard: function (e) {
-        let card = e.currentTarget.parentElement;
+    unarchiveCard: function (e, input=null) {
+        if (input === null) {
+            let card = e.currentTarget.parentElement;
 
-        let [card_id, card_col_id] = card.id.split('-').reverse();
-        console.log(card.id);
-        console.log(`column-${card_col_id}`);
+            let [card_id, card_col_id] = card.id.split('-').reverse();
+            console.log(card.id);
+            console.log(`column-${card_col_id}`);
 
-        let column = document.getElementById(`column-${card_col_id}`);
-        let columnDataSet = JSON.parse(column.dataset.columnData);
+            let column = document.getElementById(`column-${card_col_id}`);
+            let columnDataSet = JSON.parse(column.dataset.columnData);
 
-        let cardData = {
-            card_id: card_id,
-            card_col_id: card_col_id,
-            board_public: columnDataSet.isPublic
-        };
+            let cardData = {
+                card_id: card_id,
+                card_col_id: card_col_id,
+                board_public: columnDataSet.isPublic
+            };
 
-        dataHandler.unarchiveCard(cardData, function (column) {
-            card.remove();
+            dataHandler.unarchiveCard(cardData, function (column) {
+                card.remove();
 
-            let destColumn = document.getElementById(`column-${card_col_id}`);
+                let destColumn = document.getElementById(`column-${card_col_id}`);
+                destColumn.lastElementChild.innerHTML = '';
+                dom.showCards(column.cards, card_col_id);
+                dom.archiveCardAddEventListener();
+
+                dragAndDrop.init();
+                dom.updateEventListeners();
+            });
+        } else {
+            input.card.remove();
+            let destColumn = document.getElementById(`column-${input.card_col_id}`);
             destColumn.lastElementChild.innerHTML = '';
-            dom.showCards(column.cards, card_col_id);
+            dom.showCards(input.cards, input.card_col_id);
             dom.archiveCardAddEventListener();
 
             dragAndDrop.init();
             dom.updateEventListeners();
-        });
+        }
+
     },
 
     hidSowArchive: function () {
@@ -90,6 +102,8 @@ export let archive = {
         archive.cardContainer.innerHTML = '';
         archive.cardContainer.insertAdjacentHTML('afterbegin', archive.archiveTitle)
         dataHandler.getArchiveCards( function (cardsData) {
+            console.log('cardsData');
+            console.log(cardsData);
             for (let key of Object.keys(cardsData.cards_archived)) {
                 let card_id = cardsData.cards_archived[key].card_id;
                 let card_title = cardsData.cards_archived[key].card_title;

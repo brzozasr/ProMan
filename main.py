@@ -139,6 +139,7 @@ def get_archived_cards():
             }
         )
 
+    print(data)
     return response
 
 
