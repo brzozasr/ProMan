@@ -101,7 +101,7 @@ export let sockets = {
             console.log(data.data.columns);
 
             let isPublic = data.data.board_public;
-            dom.showColumns(data.data.columns, data.data.board_id);
+            dom.showColumns(data.data.columns, data.data.board_id, isPublic);
 
             dragAndDrop.init();
             dom.updateEventListeners();

@@ -2,7 +2,7 @@ from os import urandom
 
 """Data to login as postgres administrator."""
 PG_DB = 'proman'
-PG_USERNAME = 'wojtek'
+PG_USERNAME = 'm3lk4g'
 PG_PASSWORD = 'wojtek19842041'
 
 """Host and port setting for connection to PostgreSQL."""
