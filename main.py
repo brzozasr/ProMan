@@ -122,9 +122,10 @@ def get_archived_cards():
     """Get all archived cards returns as a JSON."""
     if session.get(SESSION_USER_ID) and session.get(SESSION_USER_LOGIN):
         data = get_public_private_archive_cards(str(session.get(SESSION_USER_ID)))
+        print('data1:', data)
     else:
         data = get_public_archive_cards()
-
+        print('data2:', data)
     if is_iterable(data):
         response = app.response_class(
             response=data,
@@ -139,7 +140,6 @@ def get_archived_cards():
             }
         )
 
-    print(data)
     return response
 
 
