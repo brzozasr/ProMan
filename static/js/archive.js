@@ -35,6 +35,7 @@ export let archive = {
 
     unarchiveCard: function (e, input=null) {
         if (input === null) {
+            dom.isUnarchiving = true;
             let card = e.currentTarget.parentElement;
 
             let [card_id, card_col_id] = card.id.split('-').reverse();
@@ -54,18 +55,25 @@ export let archive = {
                 card.remove();
 
                 let destColumn = document.getElementById(`column-${card_col_id}`);
+                let destColumnDataSet = JSON.parse(destColumn.dataset.columnData);
                 destColumn.lastElementChild.innerHTML = '';
                 dom.showCards(column.cards, card_col_id);
+                dom.newCardAddButton(card_col_id, destColumnDataSet.col_board_id);
                 dom.archiveCardAddEventListener();
 
                 dragAndDrop.init();
                 dom.updateEventListeners();
+
+                dom.isUnarchiving = false;
             });
-        } else {
+        } else if (!dom.isUnarchiving) {
             input.card.remove();
             let destColumn = document.getElementById(`column-${input.card_col_id}`);
+            let destColumnDataSet = JSON.parse(destColumn.dataset.columnData);
             destColumn.lastElementChild.innerHTML = '';
             dom.showCards(input.cards, input.card_col_id);
+            dom.newCardAddButton(input.card_col_id, destColumnDataSet.col_board_id);
+            dom.archiveCardAddEventListener();
             dom.archiveCardAddEventListener();
 
             dragAndDrop.init();

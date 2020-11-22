@@ -7,6 +7,8 @@ import { popupLoginHiding } from "./popup.js";
 import {archive} from "./archive.js";
 
 export let dom = {
+    isArchiving: false,
+    isUnarchiving: false,
     init: function () {
         // This function should run once, when the page is loaded.
 
@@ -395,6 +397,7 @@ export let dom = {
     },
     archiveCard: function (e, input=null) {
         if (input === null) {
+            dom.isArchiving = true;
             let card = e.currentTarget.parentElement;
             let cardDataSet = JSON.parse(card.dataset.cardData);
             let column = document.getElementById(`column-${cardDataSet.column_id}`);
@@ -412,8 +415,10 @@ export let dom = {
 
                 console.log('native')
                 archive.addAllArchiveCards();
+
+                dom.isArchiving = false;
             });
-        } else {
+        } else if (!dom.isArchiving) {
             input.card.remove();
             dragAndDrop.correctCardOrder(input.card_col_id);
             console.log('socket')

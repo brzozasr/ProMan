@@ -154,6 +154,8 @@ export let sockets = {
             }
 
 
+
+
             // card.remove();
 
             // dragAndDrop.correctCardOrder(data.data.card_col_id);
