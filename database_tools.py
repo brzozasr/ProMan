@@ -4,11 +4,11 @@ from psycopg2.extras import RealDictCursor
 
 
 class DatabaseTools:
-    pg_db = 'proman'
-    pg_username = 'm3lk4g'
-    pg_password = 'wojtek19842041'
-    pg_host = 'localhost'
-    pg_port = 5432
+    pg_db = PG_DB
+    pg_username = PG_USERNAME
+    pg_password = PG_PASSWORD
+    pg_host = PG_HOST
+    pg_port = PG_PORT
 
     def __init__(self):
         self.__db_name = DatabaseTools.pg_db
